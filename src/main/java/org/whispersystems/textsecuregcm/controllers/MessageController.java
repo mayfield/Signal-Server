@@ -222,7 +222,7 @@ public class MessageController {
         messageBuilder.setRelay(source.getRelay().get());
       }
 
-      pushSender.sendMessage(destinationAccount, destinationDevice, messageBuilder.build());
+      pushSender.sendMessage(destinationAccount, destinationDevice, messageBuilder.build(), incomingMessage.isSilent());
     } catch (NotPushRegisteredException e) {
       logger.warn("Device not registered", e);
       return false;

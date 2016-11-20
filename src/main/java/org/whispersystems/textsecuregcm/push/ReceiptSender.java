@@ -72,7 +72,7 @@ public class ReceiptSender {
 
     for (Device device : destinationDevices) {
       if (device.isActive()) {
-        pushSender.sendMessage(destinationAccount, device, message.build());
+        pushSender.sendMessage(destinationAccount, device, message.build(), true);
       }
     }
   }
