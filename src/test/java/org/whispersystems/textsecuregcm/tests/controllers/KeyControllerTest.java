@@ -9,11 +9,8 @@ import org.mockito.ArgumentCaptor;
 import org.whispersystems.dropwizard.simpleauth.AuthValueFactoryProvider;
 import org.whispersystems.textsecuregcm.controllers.KeysControllerV2;
 import org.whispersystems.textsecuregcm.entities.PreKeyCount;
-import org.whispersystems.textsecuregcm.entities.PreKeyResponseV1;
 import org.whispersystems.textsecuregcm.entities.PreKeyResponseV2;
-import org.whispersystems.textsecuregcm.entities.PreKeyStateV1;
 import org.whispersystems.textsecuregcm.entities.PreKeyStateV2;
-import org.whispersystems.textsecuregcm.entities.PreKeyV1;
 import org.whispersystems.textsecuregcm.entities.PreKeyV2;
 import org.whispersystems.textsecuregcm.entities.SignedPreKey;
 import org.whispersystems.textsecuregcm.limits.RateLimiter;
@@ -110,6 +107,7 @@ public class KeyControllerTest {
     when(existsAccount.getDevices()).thenReturn(allDevices);
     when(existsAccount.isActive()).thenReturn(true);
     when(existsAccount.getIdentityKey()).thenReturn("existsidentitykey");
+    when(existsAccount.getNumber()).thenReturn(EXISTS_NUMBER);
 
     when(accounts.get(EXISTS_NUMBER)).thenReturn(Optional.of(existsAccount));
     when(accounts.get(NOT_EXISTS_NUMBER)).thenReturn(Optional.<Account>absent());
