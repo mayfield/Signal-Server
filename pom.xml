@@ -9,10 +9,11 @@
 
     <groupId>org.whispersystems.textsecure</groupId>
     <artifactId>TextSecureServer</artifactId>
-    <version>1.04</version>
+    <version>1.49</version>
 
     <properties>
         <dropwizard.version>1.1.2</dropwizard.version>
+        <jackson.api.version>2.6.0</jackson.api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -110,6 +111,17 @@
         </dependency>
 
         <dependency>
+            <groupId>com.notnoop.apns</groupId>
+            <artifactId>apns</artifactId>
+            <version>0.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.whispersystems</groupId>
+            <artifactId>gcm-sender-async</artifactId>
+            <version>0.1.4</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.glassfish.jersey.test-framework.providers</groupId>
             <artifactId>jersey-test-framework-provider-grizzly2</artifactId>
             <version>2.19</version>
@@ -151,6 +163,12 @@
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpcore</artifactId>
                 <version>4.4.6</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
