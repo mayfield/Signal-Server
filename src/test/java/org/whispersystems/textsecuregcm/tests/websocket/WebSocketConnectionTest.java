@@ -131,7 +131,7 @@ public class WebSocketConnectionTest {
     final List<SettableFuture<WebSocketResponseMessage>> futures = new LinkedList<>();
     final WebSocketClient                                client  = mock(WebSocketClient.class);
 
-    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), any(List.class), any(Optional.class)))
+    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any()))
         .thenAnswer(new Answer<SettableFuture<WebSocketResponseMessage>>() {
           @Override
           public SettableFuture<WebSocketResponseMessage> answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -146,7 +146,7 @@ public class WebSocketConnectionTest {
                                                              account, device, client);
 
     connection.onDispatchSubscribed(websocketAddress.serialize());
-    verify(client, times(3)).sendRequest(eq("PUT"), eq("/api/v1/message"), anyList(), any(Optional.class));
+    verify(client, times(3)).sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any());
 
     assertTrue(futures.size() == 3);
 
@@ -215,7 +215,7 @@ public class WebSocketConnectionTest {
     final List<SettableFuture<WebSocketResponseMessage>> futures = new LinkedList<>();
     final WebSocketClient                                client  = mock(WebSocketClient.class);
 
-    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), anyList(), any(Optional.class)))
+    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any()))
         .thenAnswer(new Answer<SettableFuture<WebSocketResponseMessage>>() {
           @Override
           public SettableFuture<WebSocketResponseMessage> answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -240,7 +240,7 @@ public class WebSocketConnectionTest {
                                                                                          .setContent(ByteString.copyFrom(secondMessage.toByteArray()))
                                                                                          .build().toByteArray());
 
-    verify(client, times(2)).sendRequest(eq("PUT"), eq("/api/v1/message"), anyList(), any(Optional.class));
+    verify(client, times(2)).sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any());
 
     assertEquals(futures.size(), 2);
 
@@ -321,7 +321,7 @@ public class WebSocketConnectionTest {
     final List<SettableFuture<WebSocketResponseMessage>> futures = new LinkedList<>();
     final WebSocketClient                                client  = mock(WebSocketClient.class);
 
-    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), anyList(), any(Optional.class)))
+    when(client.sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any()))
         .thenAnswer(new Answer<SettableFuture<WebSocketResponseMessage>>() {
           @Override
           public SettableFuture<WebSocketResponseMessage> answer(InvocationOnMock invocationOnMock) throws Throwable {
@@ -337,7 +337,7 @@ public class WebSocketConnectionTest {
 
     connection.onDispatchSubscribed(websocketAddress.serialize());
 
-    verify(client, times(2)).sendRequest(eq("PUT"), eq("/api/v1/message"), anyList(), any(Optional.class));
+    verify(client, times(2)).sendRequest(eq("PUT"), eq("/api/v1/message"), ArgumentMatchers.nullable(List.class), ArgumentMatchers.<Optional<byte[]>>any());
 
     assertEquals(futures.size(), 2);
 

@@ -13,7 +13,7 @@
 
     <properties>
         <dropwizard.version>1.1.2</dropwizard.version>
-        <jackson.api.version>2.6.0</jackson.api.version>
+        <jackson.api.version>2.8.7</jackson.api.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -63,7 +63,7 @@
         <dependency>
             <groupId>com.dcsquare</groupId>
             <artifactId>dropwizard-papertrail</artifactId>
-            <version>1.1</version>
+            <version>1.2</version>
         </dependency>
 
         <dependency>
@@ -169,6 +169,12 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.api.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-core</artifactId>
+                <version>1.1.0</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
