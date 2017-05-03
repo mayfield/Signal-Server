@@ -119,7 +119,7 @@ public class WhisperServerConfiguration extends Configuration {
   private ApnConfiguration apn;
 
   public WebSocketConfiguration getWebSocketConfiguration() {
-    return websocket;
+    return webSocket;
   }
 
   public PushConfiguration getPushConfiguration() {
