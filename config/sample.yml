@@ -1,56 +1,34 @@
-push: # GCM/APN push server configuration
-  host:
-  port:
-  username:
+push:
+  queueSize: # Size of push pending queue
+
+cache: # Redis server configuration for cache cluster
+  url:
+
+directory: # Redis server configuration for directory cluster
+  url:
+
+messageStore: # Postgresql database configuration for message store
+  driverClass: org.postgresql.Driver
+  user:
   password:
+  url:
 
 s3: # AWS S3 configuration
-  accessKey: 
-  accessSecret: 
-
-  # Name of the S3 bucket (needs to have been created)
-  # for attachments to go.  Should be configured with
-  # correct permissions.
+  accessKey:
+  accessSecret:
   attachmentsBucket:
 
-directory: # Redis server configuration for TS directory
-  url:
-
-cache: # Redis server configuration for general purpose caching
-  url:
-
-websocket:
-  enabled: true
-
-messageStore: # Postgres database configuration for message store
+database: # Postgresql database configuration
   driverClass: org.postgresql.Driver
   user:
   password:
   url:
 
-database: # Postgres database configuration for account store
-  # the name of your JDBC driver
-  driverClass: org.postgresql.Driver
+apn: # Apple Push Notifications configuration
+  bundleId:
+  pushCertificate:
+  pushKey:
 
-  # the username
-  user:
-
-  # the password
-  password:
-
-  # the JDBC URL
-  url: jdbc:postgresql://somehost:somport/somedb
-
-  # any properties specific to your JDBC driver:
-  properties:
-    charSet: UTF-8
-
-federation:
-  name:
-  peers: 
-    -
-      name: somepeer
-      url: https://foo.com
-      authenticationToken: foo
-      certificate: in pem format 
-
+gcm: # GCM Configuration
+  senderId:
+  apiKey:
