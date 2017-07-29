@@ -1,48 +1,50 @@
 {
   "name": "TextSecure-Server",
   "description": "Forsta TextSecure-Server Fork",
+
+  "addons": [{
+    "plan": "heroku-postgresql",
+    "as": "ACCOUNTS_DATABASE"
+  }, {
+    "plan": "heroku-postgresql",
+    "as": "MESSAGES_DATABASE"
+  }, {
+    "plan": "heroku-redis"
+  }],
+
   "env": {
-    "ACCOUNT_DATABASE_URL": {
-      "required": true
-    },
-    "MESSAGE_DATABASE_URL": {
-      "required": true
-    },
     "PUSHSERVER_HOST": {
-      "required": false
+      "required": true
     },
     "PUSHSERVER_PASSWORD": {
-      "required": false
+      "required": true
     },
     "PUSHSERVER_PORT": {
-      "required": false
+      "required": true
     },
     "PUSHSERVER_USERNAME": {
-      "required": false
-    },
-    "REDIS_URL": {
-      "required": false
+      "required": true
     },
     "S3_ACCESSKEY": {
-      "required": false
+      "required": true
     },
     "S3_ACCESSSECRET": {
-      "required": false
+      "required": true
     },
     "S3_ATTACHMENTSBUCKET": {
-      "required": false
+      "required": true
     },
     "TWILIO_ACCOUNTID": {
-      "required": false
+      "required": true
     },
     "TWILIO_ACCOUNTTOKEN": {
-      "required": false
+      "required": true
     },
     "TWILIO_LOCALDOMAIN": {
-      "required": false
+      "required": true
     },
     "TWILIO_NUMBER": {
-      "required": false
+      "required": true
     }
   }
 }
