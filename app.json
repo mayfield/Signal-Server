@@ -53,5 +53,8 @@
     "as": "MESSAGES_DATABASE"
   }, {
     "plan": "heroku-redis"
+  }],
+  "buildpacks": [{
+    "url": "heroku/java"
   }]
 }
