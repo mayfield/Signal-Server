@@ -4,9 +4,9 @@ logging:
 twilio:
     numbers:
         - PLACEHOLDER
-    accountId: MUST_SET
-    accountToken: MUST_SET
-    localDomain: MUST_SET
+    accountId: MUST_SET_ACCOUNT_ID
+    accountToken: MUST_SET_ACCOUNT_TOKEN
+    localDomain: MUST_SET_LOCAL_DOMAIN
 
 redphone:
     authKey: #not-appliciable
@@ -14,13 +14,13 @@ redphone:
 push:
   host: localhost
   port: 9090
-  username: MUST_SET
-  password: MUST_SET
+  username: MUST_SET_PUSH_USER
+  password: MUST_SET_PUSH_PASS
 
 s3:
-    accessKey: MUST_SET
-    accessSecret: MUST_SET
-    attachmentsBucket: MUST_SET
+    accessKey: MUST_SET_S3_ACCESSKEY
+    accessSecret: MUST_SET_S3_ACCESSSECRET
+    attachmentsBucket: MUST_SET_ATTACHMENTSBUCKET
 
 server:
     applicationConnectors:
