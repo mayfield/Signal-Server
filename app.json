@@ -1,8 +1,6 @@
 {
   "name": "TextSecure-Server",
-  "description": "Heroku Deployment file",
-  "scripts": {
-  },
+  "description": "Forsta TextSecure-Server Fork",
   "env": {
     "ACCOUNTSTORE_DRIVERCLASS": {
       "required": true
@@ -72,18 +70,17 @@
     },
     "TWILIO_NUMBERS": {
       "required": true
-    },
-    "WEBSOCKET_ENABLE": {
-      "required": true
     }
   },
   "formation": {
   },
-  "addons": [
-    "heroku-postgresql",
-    "heroku-redis"
-  ],
-  "buildpacks": [
-
-  ]
+  "addons": [{
+    "plan": "heroku-postgresql",
+    "as": "accounts_db"
+  }, {
+    "plan": "heroku-postgresql",
+    "as": "messages_db"
+  }, {
+    "plan": "heroku-redis"
+  }]
 }
