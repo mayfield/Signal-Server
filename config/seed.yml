@@ -1,13 +1,26 @@
-
 logging:
     level: INFO
 
 twilio:
     numbers:
         - PLACEHOLDER
+    accountId: MUST_SET
+    accountToken: MUST_SET
+    localDomain: MUST_SET
 
 redphone:
-    authKey: 1234567890 #bogus / not-appliciable
+    authKey: #not-appliciable
+
+push:
+  host: localhost
+  port: 9090
+  username: MUST_SET
+  password: MUST_SET
+
+s3:
+    accessKey: MUST_SET
+    accessSecret: MUST_SET
+    attachmentsBucket: MUST_SET
 
 server:
     applicationConnectors:
