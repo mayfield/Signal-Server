@@ -44,17 +44,5 @@
     "TWILIO_NUMBER": {
       "required": false
     }
-  },
-  "addons": [{
-    "plan": "heroku-postgresql",
-    "as": "ACCOUNTS_DATABASE"
-  }, {
-    "plan": "heroku-postgresql",
-    "as": "MESSAGES_DATABASE"
-  }, {
-    "plan": "heroku-redis"
-  }],
-  "buildpacks": [{
-    "url": "heroku/java"
-  }]
+  }
 }
