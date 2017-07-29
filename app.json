@@ -47,10 +47,10 @@
   },
   "addons": [{
     "plan": "heroku-postgresql",
-    "as": "accounts_db"
+    "as": "ACCOUNTS_DATABASE"
   }, {
     "plan": "heroku-postgresql",
-    "as": "messages_db"
+    "as": "MESSAGES_DATABASE"
   }, {
     "plan": "heroku-redis"
   }]
