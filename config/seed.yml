@@ -1,0 +1,56 @@
+
+logging:
+    level: INFO
+
+twilio:
+    numbers:
+        - PLACEHOLDER
+
+redphone:
+    authKey: 1234567890 #bogus / not-appliciable
+
+server:
+    applicationConnectors:
+        - type: http
+          port: 8180
+
+    adminConnectors:
+        - type: http
+          port: 8181
+
+directory:
+    url: "redis://localhost:6379/0"
+
+cache:
+    url: "redis://localhost:6379/1"
+
+messageStore:
+    driverClass: org.postgresql.Driver
+    properties:
+        charSet: UTF-8
+
+database:
+    driverClass: org.postgresql.Driver
+    properties:
+        charSet: UTF-8
+
+limits:
+    prekeys:
+      bucketSize: 100
+      leakRatePerMinute: 50
+
+    messages:
+      bucketSize: 1000
+      leakRatePerMinute: 500
+
+    attachments:
+      bucketSize: 1000
+      leakRatePerMinute: 100
+
+    allocateDevice:
+      bucketSize: 10
+      leakRatePerMinute: 5
+
+    verifyDevice:
+      bucketSize: 10
+      leakRatePerMinute: 5
