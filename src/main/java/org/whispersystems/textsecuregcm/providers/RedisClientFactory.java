@@ -40,15 +40,10 @@ public class RedisClientFactory implements RedisPubSubConnectionFactory {
   private final JedisPool jedisPool;
 
   public RedisClientFactory(String url) throws URISyntaxException {
-    JedisPoolConfig poolConfig = new JedisPoolConfig();
-    poolConfig.setTestOnBorrow(true);
-
     URI redisURI = new URI(url);
-
     this.host      = redisURI.getHost();
     this.port      = redisURI.getPort();
-    this.jedisPool = new JedisPool(poolConfig, host, port,
-                                   Protocol.DEFAULT_TIMEOUT, null);
+    this.jedisPool = new JedisPool(url);
   }
 
   public JedisPool getRedisClientPool() {
