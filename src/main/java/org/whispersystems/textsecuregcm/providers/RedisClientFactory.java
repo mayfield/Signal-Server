@@ -37,12 +37,19 @@ public class RedisClientFactory implements RedisPubSubConnectionFactory {
 
   private final String    host;
   private final int       port;
+  private final String    password;
   private final JedisPool jedisPool;
 
   public RedisClientFactory(String url) throws URISyntaxException {
     URI redisURI = new URI(url);
     this.host      = redisURI.getHost();
     this.port      = redisURI.getPort();
+    String userInfo = redisURI.getUserInfo();
+    if (userInfo != null) {
+      this.password = userInfo.split(":", 2)[1];
+    } else {
+      this.password = null;
+    }
     this.jedisPool = new JedisPool(url);
   }
 
@@ -55,10 +62,10 @@ public class RedisClientFactory implements RedisPubSubConnectionFactory {
     while (true) {
       try {
         Socket socket = new Socket(host, port);
-        return new PubSubConnection(socket);
+        return new PubSubConnection(socket, this.password);
       } catch (IOException e) {
         logger.warn("Error connecting", e);
-        Util.sleep(200);
+        Util.sleep(1000);
       }
     }
   }
