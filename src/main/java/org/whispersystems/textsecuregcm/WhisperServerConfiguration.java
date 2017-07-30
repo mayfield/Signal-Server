@@ -83,7 +83,7 @@ public class WhisperServerConfiguration extends Configuration {
 
   @Valid
   @JsonProperty
-  private PartnerConfiguration partner = new PartnerConfiguration();
+  private PartnerConfiguration trusted = new PartnerConfiguration();
 
   @Valid
   @NotNull
@@ -160,7 +160,7 @@ public class WhisperServerConfiguration extends Configuration {
   }
 
   public PartnerConfiguration getPartnerConfiguration() {
-    return partner;
+    return trusted;
   }
 
   public RedPhoneConfiguration getRedphoneConfiguration() {

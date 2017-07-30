@@ -1,7 +1,7 @@
 logging:
     level: INFO
 
-partner:
+trusted:
     partners:
         - name: ccsm
           token: SECURETOKEN
