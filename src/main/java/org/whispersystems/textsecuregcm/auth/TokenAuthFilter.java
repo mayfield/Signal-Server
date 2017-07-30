@@ -34,7 +34,7 @@ public class TokenAuthFilter<P> extends AuthFilter<AuthToken, P> {
         final int space = header.indexOf(' ');
         if (space > 0) {
           final String method = header.substring(0, space);
-          if (prefix.equalsIgnoreCase(method)) {
+          if ("Token".equalsIgnoreCase(method)) {
             final AuthToken token = new AuthToken(header.substring(space + 1));
             try {
               Optional<P> principal = authenticator.authenticate(token);
