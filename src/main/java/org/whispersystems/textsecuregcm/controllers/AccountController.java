@@ -1,3 +1,5 @@
+// vim: ts=2:sw=2:expandtab
+
 /**
  * Copyright (C) 2013 Open WhisperSystems
  *
@@ -34,6 +36,7 @@ import org.whispersystems.textsecuregcm.entities.AccountAttributes;
 import org.whispersystems.textsecuregcm.entities.ApnRegistrationId;
 import org.whispersystems.textsecuregcm.entities.GcmRegistrationId;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
+import org.whispersystems.textsecuregcm.partner.Partner;
 import org.whispersystems.textsecuregcm.providers.TimeProvider;
 import org.whispersystems.textsecuregcm.sms.SmsSender;
 import org.whispersystems.textsecuregcm.sms.TwilioSmsSender;
@@ -61,6 +64,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -308,6 +312,21 @@ public class AccountController {
   public Response getTwiml(@PathParam("code") String encodedVerificationText) {
     return Response.ok().entity(String.format(TwilioSmsSender.SAY_TWIML,
         encodedVerificationText)).build();
+  }
+
+  @Timed
+  @POST
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/{userId}")
+  public Response createNew(@Auth Partner trustedPartner,
+                        @PathParam("userId") String userId,
+                        @Valid AccountAttributes attrs) {
+    SecureRandom random = new SecureRandom();
+    byte _password[] = random.generateSeed(16);
+    String password = DatatypeConverter.printHexBinary(_password);
+    createAccount(userId, password, trustedPartner.getName(), attrs);
+    return Response.ok(password).build();
   }
 
   private void createAccount(String number, String password, String userAgent, AccountAttributes accountAttributes) {
