@@ -17,7 +17,7 @@ endif
 get_db_username = $(shell echo $(1) | awk -F'://' {'print $$2'} | awk -F':' {'print $$1'})
 get_db_password = $(shell echo $(1) | awk -F'://' {'print $$2'} | awk -F':' {'print $$2'} | awk -F'@' {'print $$1'})
 get_db_host = $(shell echo $(1) | awk -F'@' {'print $$2'})
-ifset = $(if $(1),$(2)=$(1))
+ifset = $(if $(1),$(2)="$(1)")
 
 ARGS := \
 		$(call ifset,$(TWILIO_ACCOUNTID),-Ddw.twilio.accountId) \
