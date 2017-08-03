@@ -81,11 +81,9 @@ public class TwilioSmsSender {
       messageParams.add(new BasicNameValuePair("MessagingServiceSid", messagingServicesId));
     }
     
-    if ("ios".equals(clientType.orNull())) {
-      messageParams.add(new BasicNameValuePair("Body", String.format(SmsSender.SMS_IOS_VERIFICATION_TEXT, verificationCode, verificationCode)));
-    } else {
-      messageParams.add(new BasicNameValuePair("Body", String.format(SmsSender.SMS_VERIFICATION_TEXT, verificationCode)));
-    }
+    // Format the body text.
+    //
+    messageParams.add(new BasicNameValuePair("Body", String.format(SmsSender.SMS_VERIFICATION_TEXT, verificationCode)));
 	
     try {
       messageFactory.create(messageParams);
