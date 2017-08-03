@@ -57,7 +57,7 @@ public class PushServiceClient {
 
   private void sendPush(String path, Object entity) throws TransientPushFailureException {
     try {
-      Response response = client.target("http://" + host + ":" + port)
+      Response response = client.target("https://" + host + ":" + port)
                                 .path(path)
                                 .request()
                                 .header("Authorization", authorization)
@@ -75,7 +75,7 @@ public class PushServiceClient {
 
   private List<UnregisteredEvent> getFeedback(String path) throws IOException {
     try {
-      UnregisteredEventList unregisteredEvents = client.target("http://" + host + ":" + port)
+      UnregisteredEventList unregisteredEvents = client.target("https://" + host + ":" + port)
                                                        .path(path)
                                                        .request()
                                                        .header("Authorization", authorization)
