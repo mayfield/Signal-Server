@@ -1,3 +1,5 @@
+{
+  "name": "TextSecure-Server",
   "description": "Heroku Deployment file",
   "scripts": {
   },

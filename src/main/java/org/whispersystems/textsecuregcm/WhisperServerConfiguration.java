@@ -107,7 +107,8 @@ public class WhisperServerConfiguration extends Configuration {
 
 
   public WebsocketConfiguration getWebsocketConfiguration() {
-    return websocket;
+
+    return ForstaConfiguration.getWebsocketConfiguration();
   }
 
   public TwilioConfiguration getTwilioConfiguration() {
@@ -131,7 +132,7 @@ public class WhisperServerConfiguration extends Configuration {
   }
 
   public RedisConfiguration getDirectoryConfiguration() {
-    return directory;
+   return directory;
   }
 
   public DataSourceFactory getMessageStoreConfiguration() {
