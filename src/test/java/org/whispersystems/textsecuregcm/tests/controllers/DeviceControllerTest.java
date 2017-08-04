@@ -69,7 +69,6 @@ public class DeviceControllerTest {
   private RateLimiters          rateLimiters          = mock(RateLimiters.class          );
   private RateLimiter           rateLimiter           = mock(RateLimiter.class           );
   private Account               account               = mock(Account.class               );
-  private Account               maxedAccount          = mock(Account.class);
 
   @Rule
   public final ResourceTestRule resources = ResourceTestRule.builder()
@@ -94,12 +93,10 @@ public class DeviceControllerTest {
     when(rateLimiters.getVerifyDeviceLimiter()).thenReturn(rateLimiter);
 
     when(account.getNextDeviceId()).thenReturn(42L);
-    when(maxedAccount.getActiveDeviceCount()).thenReturn(3);
 
     when(pendingDevicesManager.getCodeForNumber(AuthHelper.VALID_NUMBER)).thenReturn(Optional.of("5678901"));
     when(pendingDevicesManager.getCodeForNumber(AuthHelper.VALID_NUMBER_TWO)).thenReturn(Optional.of("1112223"));
     when(accountsManager.get(AuthHelper.VALID_NUMBER)).thenReturn(Optional.of(account));
-    when(accountsManager.get(AuthHelper.VALID_NUMBER_TWO)).thenReturn(Optional.of(maxedAccount));
   }
 
   @Test
@@ -123,17 +120,6 @@ public class DeviceControllerTest {
     assertThat(response.getDeviceId()).isEqualTo(42L);
 
     verify(pendingDevicesManager).remove(AuthHelper.VALID_NUMBER);
-  }
-
-  @Test
-  public void maxDevicesTest() throws Exception {
-    Response response = resources.getJerseyTest()
-                                 .target("/v1/devices/provisioning/code")
-                                 .request()
-                                 .header("Authorization", AuthHelper.getAuthHeader(AuthHelper.VALID_NUMBER_TWO, AuthHelper.VALID_PASSWORD_TWO))
-                                 .get();
-
-    assertEquals(response.getStatus(), 411);
   }
 
   @Test
