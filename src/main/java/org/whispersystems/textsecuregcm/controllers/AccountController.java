@@ -87,7 +87,6 @@ public class AccountController {
   private final SmsSender                             smsSender;
   private final MessagesManager                       messagesManager;
   private final TimeProvider                          timeProvider;
-  private final Optional<AuthorizationTokenGenerator> tokenGenerator;
   private final Map<String, Integer>                  testDevices;
 
   public AccountController(PendingAccountsManager pendingAccounts,
@@ -96,7 +95,6 @@ public class AccountController {
                            SmsSender smsSenderFactory,
                            MessagesManager messagesManager,
                            TimeProvider timeProvider,
-                           Optional<byte[]> authorizationKey,
                            Map<String, Integer> testDevices)
   {
     this.pendingAccounts  = pendingAccounts;
@@ -106,134 +104,6 @@ public class AccountController {
     this.messagesManager  = messagesManager;
     this.timeProvider     = timeProvider;
     this.testDevices      = testDevices;
-
-    if (authorizationKey.isPresent()) {
-      tokenGenerator = Optional.of(new AuthorizationTokenGenerator(authorizationKey.get()));
-    } else {
-      tokenGenerator = Optional.absent();
-    }
-  }
-
-  @Timed
-  @GET
-  @Path("/{transport}/code/{number}")
-  public Response createAccount(@PathParam("transport") String transport,
-                                @PathParam("number")    String number,
-                                @QueryParam("client")   Optional<String> client)
-      throws IOException, RateLimitExceededException
-  {
-    if (!Util.isValidNumber(number)) {
-      logger.debug("Invalid number: " + number);
-      throw new WebApplicationException(Response.status(400).build());
-    }
-
-    switch (transport) {
-      case "sms":
-        rateLimiters.getSmsDestinationLimiter().validate(number);
-        break;
-      case "voice":
-        rateLimiters.getVoiceDestinationLimiter().validate(number);
-        break;
-      default:
-        throw new WebApplicationException(Response.status(422).build());
-    }
-
-    VerificationCode verificationCode = generateVerificationCode(number);
-    pendingAccounts.store(number, verificationCode.getVerificationCode());
-
-    if (testDevices.containsKey(number)) {
-      // noop
-    } else if (transport.equals("sms")) {
-      smsSender.deliverSmsVerification(number, client, verificationCode.getVerificationCodeDisplay());
-    } else if (transport.equals("voice")) {
-      smsSender.deliverVoxVerification(number, verificationCode.getVerificationCodeSpeech());
-    }
-
-    return Response.ok().build();
-  }
-
-  @Timed
-  @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/code/{verification_code}")
-  public void verifyAccount(@PathParam("verification_code") String verificationCode,
-                            @HeaderParam("Authorization")   String authorizationHeader,
-                            @HeaderParam("X-Signal-Agent")  String userAgent,
-                            @Valid                          AccountAttributes accountAttributes)
-      throws RateLimitExceededException
-  {
-    try {
-      AuthorizationHeader header = AuthorizationHeader.fromFullHeader(authorizationHeader);
-      String number              = header.getNumber();
-      String password            = header.getPassword();
-
-      rateLimiters.getVerifyLimiter().validate(number);
-
-      Optional<String> storedVerificationCode = pendingAccounts.getCodeForNumber(number);
-
-      if (!storedVerificationCode.isPresent() ||
-          !verificationCode.equals(storedVerificationCode.get()))
-      {
-        throw new WebApplicationException(Response.status(403).build());
-      }
-
-      if (accounts.isRelayListed(number)) {
-        throw new WebApplicationException(Response.status(417).build());
-      }
-
-      createAccount(number, password, userAgent, accountAttributes);
-    } catch (InvalidAuthorizationHeaderException e) {
-      logger.info("Bad Authorization Header", e);
-      throw new WebApplicationException(Response.status(401).build());
-    }
-  }
-
-  @Timed
-  @PUT
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/token/{verification_token}")
-  public void verifyToken(@PathParam("verification_token") String verificationToken,
-                          @HeaderParam("Authorization")    String authorizationHeader,
-                          @HeaderParam("X-Signal-Agent")   String userAgent,
-                          @Valid                           AccountAttributes accountAttributes)
-      throws RateLimitExceededException
-  {
-    try {
-      AuthorizationHeader header   = AuthorizationHeader.fromFullHeader(authorizationHeader);
-      String              number   = header.getNumber();
-      String              password = header.getPassword();
-
-      rateLimiters.getVerifyLimiter().validate(number);
-
-      if (!tokenGenerator.isPresent()) {
-        logger.debug("Attempt to authorize with key but not configured...");
-        throw new WebApplicationException(Response.status(403).build());
-      }
-
-      if (!tokenGenerator.get().isValid(verificationToken, number, timeProvider.getCurrentTimeMillis())) {
-        throw new WebApplicationException(Response.status(403).build());
-      }
-
-      createAccount(number, password, userAgent, accountAttributes);
-    } catch (InvalidAuthorizationHeaderException e) {
-      logger.info("Bad authorization header", e);
-      throw new WebApplicationException(Response.status(401).build());
-    }
-  }
-
-  @Timed
-  @GET
-  @Path("/token/")
-  @Produces(MediaType.APPLICATION_JSON)
-  public AuthorizationToken verifyToken(@Auth Account account)
-      throws RateLimitExceededException
-  {
-    if (!tokenGenerator.isPresent()) {
-      logger.debug("Attempt to authorize with key but not configured...");
-      throw new WebApplicationException(Response.status(404).build());
-    }
-
-    return tokenGenerator.get().generateFor(account.getNumber());
   }
 
   @Timed
@@ -295,13 +165,22 @@ public class AccountController {
   {
     Device device = account.getAuthenticatedDevice().get();
 
+    if (attributes.getName() != null) {
+      device.setName(attributes.getName());
+    }
+    if (attributes.getPassword() != null) {
+      device.setAuthenticationCredentials(new AuthenticationCredentials(attributes.getPassword()));
+    }
+    if (attributes.getUserAgent() != null) {
+      device.setUserAgent(attributes.getUserAgent());
+    } else if (userAgent != null) {
+      device.setUserAgent(userAgent);
+    }
     device.setFetchesMessages(attributes.getFetchesMessages());
-    device.setName(attributes.getName());
-    device.setLastSeen(Util.todayInMillis());
     device.setVoiceSupported(attributes.getVoice());
     device.setRegistrationId(attributes.getRegistrationId());
     device.setSignalingKey(attributes.getSignalingKey());
-    device.setUserAgent(userAgent);
+    device.setLastSeen(Util.todayInMillis());
 
     accounts.update(account);
   }
@@ -320,70 +199,38 @@ public class AccountController {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/user/{userId}")
-  public Response resetAccount(@Auth Partner trustedPartner,
+  public DeviceResponse resetAccount(@Auth Partner trustedPartner,
                                @PathParam("userId") String userId,
                                @Valid AccountAttributes attrs) {
-    SecureRandom random = new SecureRandom();
-    byte _password[] = random.generateSeed(16);
-    String password = DatatypeConverter.printHexBinary(_password);
-    createAccount(userId, password, trustedPartner.getName(), attrs);
-    return Response.ok("{\"password\": \"" + password + "\"}").build();
-  }
-
-  @Timed
-  @POST
-  @Produces(MediaType.APPLICATION_JSON)
-  @Consumes(MediaType.APPLICATION_JSON)
-  @Path("/user")
-  public DeviceResponse addDevice(@Auth Account account,
-                                  @Valid AccountAttributes deviceAttrs)
-      throws RateLimitExceededException, DeviceLimitExceededException
-  {
-    rateLimiters.getVerifyDeviceLimiter().validate(account.getNumber());
-    // XXX move max devices to config setting.
-    if (account.getActiveDeviceCount() >= 20) {
-      throw new DeviceLimitExceededException(account.getDevices().size(), 20);
+    Optional<Account> priorAccount = accounts.get(userId);
+    if (priorAccount.isPresent()) {
+      logger.warn("Replacing existing account: " + userId);
+    } else {
+      logger.info("Creating account: " + userId);
     }
-    Device device = new Device();
-    device.setName(deviceAttrs.getName());
-    SecureRandom random = new SecureRandom();
-    byte _password[] = random.generateSeed(16);
-    String password = DatatypeConverter.printHexBinary(_password);
-    device.setAuthenticationCredentials(new AuthenticationCredentials(password));
-    device.setSignalingKey(deviceAttrs.getSignalingKey());
-    device.setFetchesMessages(deviceAttrs.getFetchesMessages());
-    device.setId(account.getNextDeviceId());
-    device.setRegistrationId(deviceAttrs.getRegistrationId());
-    device.setLastSeen(Util.todayInMillis());
-    device.setCreated(System.currentTimeMillis());
-    account.addDevice(device);
-    accounts.update(account);
-    return new DeviceResponse(device.getId(), password);
-  }
 
-  private void createAccount(String number, String password, String userAgent, AccountAttributes accountAttributes) {
     Device device = new Device();
     device.setId(Device.MASTER_ID);
-    device.setAuthenticationCredentials(new AuthenticationCredentials(password));
-    device.setSignalingKey(accountAttributes.getSignalingKey());
-    device.setFetchesMessages(accountAttributes.getFetchesMessages());
-    device.setRegistrationId(accountAttributes.getRegistrationId());
-    device.setName(accountAttributes.getName());
-    device.setVoiceSupported(accountAttributes.getVoice());
-    device.setCreated(System.currentTimeMillis());
+    device.setName(attrs.getName());
+    device.setUserAgent(attrs.getUserAgent());
+    device.setAuthenticationCredentials(new AuthenticationCredentials(attrs.getPassword()));
+    device.setSignalingKey(attrs.getSignalingKey());
+    device.setFetchesMessages(attrs.getFetchesMessages());
+    device.setRegistrationId(attrs.getRegistrationId());
     device.setLastSeen(Util.todayInMillis());
-    device.setUserAgent(userAgent);
+    device.setCreated(System.currentTimeMillis());
 
     Account account = new Account();
-    account.setNumber(number);
+    account.setNumber(userId);
     account.addDevice(device);
+
+    messagesManager.clear(userId);
 
     if (accounts.create(account)) {
       newUserMeter.mark();
     }
 
-    messagesManager.clear(number);
-    pendingAccounts.remove(number);
+    return new DeviceResponse(device.getId());
   }
 
   @VisibleForTesting protected VerificationCode generateVerificationCode(String number) {
