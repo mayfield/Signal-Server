@@ -6,8 +6,12 @@ import org.whispersystems.dropwizard.simpleauth.BasicCredentialAuthFilter;
 import org.whispersystems.textsecuregcm.auth.AccountAuthenticator;
 import org.whispersystems.textsecuregcm.auth.AuthenticationCredentials;
 import org.whispersystems.textsecuregcm.auth.FederatedPeerAuthenticator;
+import org.whispersystems.textsecuregcm.auth.PartnerAuthenticator;
+import org.whispersystems.textsecuregcm.auth.TokenAuthFilter;
 import org.whispersystems.textsecuregcm.configuration.FederationConfiguration;
+import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
 import org.whispersystems.textsecuregcm.federation.FederatedPeer;
+import org.whispersystems.textsecuregcm.partner.Partner;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
 import org.whispersystems.textsecuregcm.storage.Device;
@@ -65,6 +69,12 @@ public class AuthHelper {
     FederationConfiguration federationConfiguration = mock(FederationConfiguration.class);
     when(federationConfiguration.getPeers()).thenReturn(peer);
 
+    List<Partner> partners = new LinkedList<Partner>() {{
+      add(new Partner("ccsm", "SPECIAL-PARTNER-TOKEN"));
+    }};
+    PartnerConfiguration partnerConfiguration = mock(PartnerConfiguration.class);
+    when(partnerConfiguration.getPartners()).thenReturn(partners);
+
     return new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<Account>()
                                       .setAuthenticator(new AccountAuthenticator(ACCOUNTS_MANAGER))
                                       .setPrincipal(Account.class)
@@ -72,6 +82,10 @@ public class AuthHelper {
                                   new BasicCredentialAuthFilter.Builder<FederatedPeer>()
                                       .setAuthenticator(new FederatedPeerAuthenticator(federationConfiguration))
                                       .setPrincipal(FederatedPeer.class)
+                                      .buildAuthFilter(),
+                                  new TokenAuthFilter.Builder<Partner>()
+                                      .setAuthenticator(new PartnerAuthenticator(partnerConfiguration))
+                                      .setPrincipal(Partner.class)
                                       .buildAuthFilter());
   }
 

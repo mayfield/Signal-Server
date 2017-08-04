@@ -18,6 +18,7 @@ package org.whispersystems.textsecuregcm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.whispersystems.textsecuregcm.configuration.FederationConfiguration;
+import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GraphiteConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PushConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RateLimitsConfiguration;
@@ -79,6 +80,10 @@ public class WhisperServerConfiguration extends Configuration {
   @Valid
   @JsonProperty
   private FederationConfiguration federation = new FederationConfiguration();
+
+  @Valid
+  @JsonProperty
+  private PartnerConfiguration trusted = new PartnerConfiguration();
 
   @Valid
   @NotNull
@@ -153,6 +158,10 @@ public class WhisperServerConfiguration extends Configuration {
 
   public FederationConfiguration getFederationConfiguration() {
     return federation;
+  }
+
+  public PartnerConfiguration getPartnerConfiguration() {
+    return trusted;
   }
 
   public RedPhoneConfiguration getRedphoneConfiguration() {

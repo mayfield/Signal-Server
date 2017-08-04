@@ -1,6 +1,10 @@
 logging:
-     level: INFO
- 
+    level: INFO
+
+trusted:
+    partners:
+        - name: PLACEHOLDER
+
 twilio:
      numbers:
          - PLACEHOLDER
