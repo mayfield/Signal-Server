@@ -41,14 +41,13 @@ public class PubSubConnection {
     this.closed       = new AtomicBoolean(false);
     
     if (password != null) {
-        
-    }
       byte[] command = Util.combine(AUTH_COMMAND, password.getBytes(), CRLF);
       outputStream.write(command);
       String ok = inputStream.readLine();
       if (!ok.equals("+OK")) {
           throw new IOException("Incorrect Redis Password");
       }
+    }
   }
 
   public void subscribe(String channelName) throws IOException {
