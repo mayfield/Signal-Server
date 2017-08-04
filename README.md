@@ -46,6 +46,7 @@ Configuration is achieved via setting env vars.
 
     PORT
     ADMIN_PORT
+    CCSM_PARTNER_TOKEN
 
 
 ---------------------
