@@ -47,7 +47,10 @@ ARGS := \
 RUN := $(JAVA) $(ARGS) -jar $(TARGET)
 
 build:
-	mvn install
+	mvn install -DskipTests
+
+test:
+	mvn test
 
 dbmigrate:
 	$(RUN) accountdb migrate $(CONFIG)

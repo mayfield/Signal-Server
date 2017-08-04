@@ -28,6 +28,9 @@ public class AccountAttributes {
   private String signalingKey;
 
   @JsonProperty
+  private String password;
+
+  @JsonProperty
   private boolean fetchesMessages;
 
   @JsonProperty
@@ -36,6 +39,9 @@ public class AccountAttributes {
   @JsonProperty
   @Length(max = 50, message = "This field must be less than 50 characters")
   private String name;
+
+  @JsonProperty
+  private String userAgent;
 
   @JsonProperty
   private boolean voice;
@@ -72,8 +78,15 @@ public class AccountAttributes {
     return name;
   }
 
+  public String getUserAgent() {
+    return userAgent;
+  }
+
   public boolean getVoice() {
     return voice;
   }
 
+  public String getPassword() {
+    return password;
+  }
 }

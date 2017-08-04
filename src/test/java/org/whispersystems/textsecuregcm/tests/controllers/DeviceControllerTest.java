@@ -63,11 +63,11 @@ public class DeviceControllerTest {
   }
 
   private PendingDevicesManager pendingDevicesManager = mock(PendingDevicesManager.class);
-  private AccountsManager       accountsManager       = mock(AccountsManager.class       );
+  private AccountsManager       accountsManager       = mock(AccountsManager.class);
   private MessagesManager       messagesManager       = mock(MessagesManager.class);
-  private RateLimiters          rateLimiters          = mock(RateLimiters.class          );
-  private RateLimiter           rateLimiter           = mock(RateLimiter.class           );
-  private Account               account               = mock(Account.class               );
+  private RateLimiters          rateLimiters          = mock(RateLimiters.class);
+  private RateLimiter           rateLimiter           = mock(RateLimiter.class);
+  private Account               account               = mock(Account.class);
 
   @Rule
   public final ResourceTestRule resources = ResourceTestRule.builder()

@@ -194,7 +194,6 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     PushSender               pushSender          = new PushSender(apnFallbackManager, pushServiceClient, websocketSender, config.getPushConfiguration().getQueueSize());
     ReceiptSender            receiptSender       = new ReceiptSender(accountsManager, pushSender, federatedClientManager);
     FeedbackHandler          feedbackHandler     = new FeedbackHandler(pushServiceClient, accountsManager);
-    Optional<byte[]>         authorizationKey    = config.getRedphoneConfiguration().getAuthorizationKey();
 
     environment.lifecycle().manage(apnFallbackManager);
     environment.lifecycle().manage(pubSubManager);
@@ -220,7 +219,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
                                                              .buildAuthFilter()));
     environment.jersey().register(new AuthValueFactoryProvider.Binder());
 
-    environment.jersey().register(new AccountController(pendingAccountsManager, accountsManager, rateLimiters, smsSender, messagesManager, new TimeProvider(), authorizationKey, config.getTestDevices()));
+    environment.jersey().register(new AccountController(pendingAccountsManager, accountsManager, rateLimiters, smsSender, messagesManager, new TimeProvider(), config.getTestDevices()));
     environment.jersey().register(new DeviceController(pendingDevicesManager, accountsManager, messagesManager, rateLimiters));
     environment.jersey().register(new DirectoryController(rateLimiters, directory));
     environment.jersey().register(new FederationControllerV1(accountsManager, attachmentController, messageController, keysControllerV1));
