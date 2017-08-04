@@ -34,6 +34,8 @@ ARGS := \
 		$(call ifset,$(REDIS_CACHE_URL),-Ddw.cache.url) \
 		$(call ifset,$(PORT),-Ddw.server.applicationConnectors[0].port) \
 		$(call ifset,$(ADMIN_PORT),-Ddw.server.adminConnectors[0].port) \
+		$(call ifset,$(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].token) \
+		$(if $(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].name=CCSM) \
 		-Ddw.database.url=jdbc:postgresql://$(call get_db_host,$(ACCOUNT_DATABASE_URL)) \
 		-Ddw.database.user=$(call get_db_username,$(ACCOUNT_DATABASE_URL)) \
 		-Ddw.database.password=$(call get_db_password,$(ACCOUNT_DATABASE_URL)) \

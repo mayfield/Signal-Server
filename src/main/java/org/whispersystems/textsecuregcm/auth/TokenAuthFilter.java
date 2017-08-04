@@ -23,6 +23,8 @@ import io.dropwizard.auth.AuthenticationException;
 public class TokenAuthFilter<P> extends AuthFilter<AuthToken, P> {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(TokenAuthFilter.class);
+  protected String prefix = "Token";
+  protected String realm = "";
 
   private TokenAuthFilter() {}
 
@@ -34,7 +36,7 @@ public class TokenAuthFilter<P> extends AuthFilter<AuthToken, P> {
         final int space = header.indexOf(' ');
         if (space > 0) {
           final String method = header.substring(0, space);
-          if ("Token".equalsIgnoreCase(method)) {
+          if (prefix.equalsIgnoreCase(method)) {
             final AuthToken token = new AuthToken(header.substring(space + 1));
             try {
               Optional<P> principal = authenticator.authenticate(token);
@@ -52,7 +54,7 @@ public class TokenAuthFilter<P> extends AuthFilter<AuthToken, P> {
     } catch (IllegalArgumentException e) {
       LOGGER.warn("Error decoding auth token", e);
     }
-    throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, "TokenAuth"));
+    throw new WebApplicationException(unauthorizedHandler.buildResponse(prefix, realm));
   }
 
   public static class Builder<P> extends AuthFilter.AuthFilterBuilder<AuthToken, P, TokenAuthFilter<P>> {

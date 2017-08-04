@@ -23,7 +23,7 @@ public class PartnerAuthenticator implements Authenticator<AuthToken, Partner> {
       return Optional.absent();
     }
     for (Partner partner : partners) {
-      if (token.getToken().equals(partner.getToken())) {
+      if (partner != null && token.getToken().equals(partner.getToken())) {
         return Optional.of(partner);
       }
     }
