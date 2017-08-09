@@ -21,15 +21,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RateLimitsConfiguration {
 
   @JsonProperty
-  private RateLimitConfiguration smsDestination = new RateLimitConfiguration(2, 2);
-
-  @JsonProperty
-  private RateLimitConfiguration voiceDestination = new RateLimitConfiguration(2, 1.0 / 2.0);
-
-  @JsonProperty
-  private RateLimitConfiguration verifyNumber = new RateLimitConfiguration(2, 2);
-
-  @JsonProperty
   private RateLimitConfiguration attachments = new RateLimitConfiguration(50, 50);
 
   @JsonProperty
@@ -69,18 +60,6 @@ public class RateLimitsConfiguration {
 
   public RateLimitConfiguration getAttachments() {
     return attachments;
-  }
-
-  public RateLimitConfiguration getSmsDestination() {
-    return smsDestination;
-  }
-
-  public RateLimitConfiguration getVoiceDestination() {
-    return voiceDestination;
-  }
-
-  public RateLimitConfiguration getVerifyNumber() {
-    return verifyNumber;
   }
 
   public static class RateLimitConfiguration {

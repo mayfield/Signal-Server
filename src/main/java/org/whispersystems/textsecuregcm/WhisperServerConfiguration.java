@@ -22,11 +22,9 @@ import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GraphiteConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PushConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RateLimitsConfiguration;
-import org.whispersystems.textsecuregcm.configuration.RedPhoneConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RedisConfiguration;
 import org.whispersystems.textsecuregcm.configuration.S3Configuration;
 import org.whispersystems.textsecuregcm.configuration.TestDeviceConfiguration;
-import org.whispersystems.textsecuregcm.configuration.TwilioConfiguration;
 import org.whispersystems.websocket.configuration.WebSocketConfiguration;
 
 import javax.validation.Valid;
@@ -41,11 +39,6 @@ import io.dropwizard.client.JerseyClientConfiguration;
 import io.dropwizard.db.DataSourceFactory;
 
 public class WhisperServerConfiguration extends Configuration {
-
-  @NotNull
-  @Valid
-  @JsonProperty
-  private TwilioConfiguration twilio;
 
   @NotNull
   @Valid
@@ -102,9 +95,6 @@ public class WhisperServerConfiguration extends Configuration {
   @JsonProperty
   private WebSocketConfiguration websocket = new WebSocketConfiguration();
 
-  @JsonProperty
-  private RedPhoneConfiguration redphone = new RedPhoneConfiguration();
-
   @Valid
   @NotNull
   @JsonProperty
@@ -113,10 +103,6 @@ public class WhisperServerConfiguration extends Configuration {
 
   public WebSocketConfiguration getWebSocketConfiguration() {
     return websocket;
-  }
-
-  public TwilioConfiguration getTwilioConfiguration() {
-    return twilio;
   }
 
   public PushConfiguration getPushConfiguration() {
@@ -161,10 +147,6 @@ public class WhisperServerConfiguration extends Configuration {
 
   public PartnerConfiguration getPartnerConfiguration() {
     return trusted;
-  }
-
-  public RedPhoneConfiguration getRedphoneConfiguration() {
-    return redphone;
   }
 
   public Map<String, Integer> getTestDevices() {

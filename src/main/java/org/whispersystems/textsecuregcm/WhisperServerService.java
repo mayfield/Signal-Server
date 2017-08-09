@@ -70,8 +70,6 @@ import org.whispersystems.textsecuregcm.push.PushSender;
 import org.whispersystems.textsecuregcm.push.PushServiceClient;
 import org.whispersystems.textsecuregcm.push.ReceiptSender;
 import org.whispersystems.textsecuregcm.push.WebsocketSender;
-import org.whispersystems.textsecuregcm.sms.SmsSender;
-import org.whispersystems.textsecuregcm.sms.TwilioSmsSender;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.Accounts;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
@@ -188,8 +186,6 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     RateLimiters               rateLimiters               = new RateLimiters(config.getLimitsConfiguration(), cacheClient);
 
     ApnFallbackManager       apnFallbackManager  = new ApnFallbackManager(pushServiceClient, pubSubManager);
-    TwilioSmsSender          twilioSmsSender     = new TwilioSmsSender(config.getTwilioConfiguration());
-    SmsSender                smsSender           = new SmsSender(twilioSmsSender);
     UrlSigner                urlSigner           = new UrlSigner(config.getS3Configuration());
     PushSender               pushSender          = new PushSender(apnFallbackManager, pushServiceClient, websocketSender, config.getPushConfiguration().getQueueSize());
     ReceiptSender            receiptSender       = new ReceiptSender(accountsManager, pushSender, federatedClientManager);
@@ -219,7 +215,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
                                                              .buildAuthFilter()));
     environment.jersey().register(new AuthValueFactoryProvider.Binder());
 
-    environment.jersey().register(new AccountController(pendingAccountsManager, accountsManager, rateLimiters, smsSender, messagesManager, new TimeProvider(), config.getTestDevices()));
+    environment.jersey().register(new AccountController(pendingAccountsManager, accountsManager, rateLimiters, messagesManager, new TimeProvider(), config.getTestDevices()));
     environment.jersey().register(new DeviceController(pendingDevicesManager, accountsManager, messagesManager, rateLimiters));
     environment.jersey().register(new DirectoryController(rateLimiters, directory));
     environment.jersey().register(new FederationControllerV1(accountsManager, attachmentController, messageController, keysControllerV1));

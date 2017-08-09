@@ -39,8 +39,6 @@ import org.whispersystems.textsecuregcm.entities.GcmRegistrationId;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
 import org.whispersystems.textsecuregcm.partner.Partner;
 import org.whispersystems.textsecuregcm.providers.TimeProvider;
-import org.whispersystems.textsecuregcm.sms.SmsSender;
-import org.whispersystems.textsecuregcm.sms.TwilioSmsSender;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
 import org.whispersystems.textsecuregcm.storage.Device;
@@ -84,7 +82,6 @@ public class AccountController {
   private final PendingAccountsManager                pendingAccounts;
   private final AccountsManager                       accounts;
   private final RateLimiters                          rateLimiters;
-  private final SmsSender                             smsSender;
   private final MessagesManager                       messagesManager;
   private final TimeProvider                          timeProvider;
   private final Map<String, Integer>                  testDevices;
@@ -92,7 +89,6 @@ public class AccountController {
   public AccountController(PendingAccountsManager pendingAccounts,
                            AccountsManager accounts,
                            RateLimiters rateLimiters,
-                           SmsSender smsSenderFactory,
                            MessagesManager messagesManager,
                            TimeProvider timeProvider,
                            Map<String, Integer> testDevices)
@@ -100,7 +96,6 @@ public class AccountController {
     this.pendingAccounts  = pendingAccounts;
     this.accounts         = accounts;
     this.rateLimiters     = rateLimiters;
-    this.smsSender        = smsSenderFactory;
     this.messagesManager  = messagesManager;
     this.timeProvider     = timeProvider;
     this.testDevices      = testDevices;
@@ -183,15 +178,6 @@ public class AccountController {
     device.setLastSeen(Util.todayInMillis());
 
     accounts.update(account);
-  }
-
-  @Timed
-  @POST
-  @Path("/voice/twiml/{code}")
-  @Produces(MediaType.APPLICATION_XML)
-  public Response getTwiml(@PathParam("code") String encodedVerificationText) {
-    return Response.ok().entity(String.format(TwilioSmsSender.SAY_TWIML,
-        encodedVerificationText)).build();
   }
 
   @Timed
