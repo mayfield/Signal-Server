@@ -27,21 +27,6 @@
     },
     "S3_ATTACHMENTSBUCKET": {
       "required": true
-    },
-    "TWILIO_ACCOUNTID": {
-      "required": true
-    },
-    "TWILIO_ACCOUNTTOKEN": {
-      "required": true
-    },
-    "TWILIO_LOCALDOMAIN": {
-      "required": true
-    },
-    "TWILIO_NUMBERS": {
-      "required": true
-    },
-    "WEBSOCKET_ENABLE": {
-      "required": true
     }
   },
   "addons": [{

@@ -53,7 +53,18 @@ public class RedisClientFactory implements RedisPubSubConnectionFactory {
     } else {
         this.password = null;
     }
-    this.jedisPool = new JedisPool(url);
+    /*
+     * Avoid heroku timeouts...
+     * See: https://devcenter.heroku.com/articles/heroku-redis#connecting-in-java
+     */
+    JedisPoolConfig poolConfig = new JedisPoolConfig();
+    poolConfig.setMaxTotal(50);
+    poolConfig.setMaxIdle(5);
+    poolConfig.setMinIdle(1);
+    poolConfig.setTestOnBorrow(true);
+    poolConfig.setTestOnReturn(true);
+    poolConfig.setTestWhileIdle(true);
+    this.jedisPool = new JedisPool(poolConfig, redisURI);
   }
 
   public JedisPool getRedisClientPool() {
