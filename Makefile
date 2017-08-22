@@ -19,10 +19,6 @@ get_db_host = $(shell echo $(1) | awk -F'@' {'print $$2'})
 ifset = $(if $(1),$(2)="$(1)")
 
 ARGS := \
-		$(call ifset,$(TWILIO_ACCOUNTID),-Ddw.twilio.accountId) \
-		$(call ifset,$(TWILIO_ACCOUNTTOKEN),-Ddw.twilio.accountToken) \
-		$(call ifset,$(TWILIO_NUMBERS),-Ddw.twilio.numbers[0]) \
-		$(call ifset,$(TWILIO_LOCALDOMAIN),-Ddw.twilio.localDomain) \
 		$(call ifset,$(PUSHSERVER_HOST),-Ddw.push.host) \
 		$(call ifset,$(PUSHSERVER_PORT),-Ddw.push.port) \
 		$(call ifset,$(PUSHSERVER_USERNAME),-Ddw.push.username) \

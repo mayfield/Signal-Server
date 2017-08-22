@@ -13,7 +13,6 @@ import org.whispersystems.textsecuregcm.entities.AccountAttributes;
 import org.whispersystems.textsecuregcm.limits.RateLimiter;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
 import org.whispersystems.textsecuregcm.providers.TimeProvider;
-import org.whispersystems.textsecuregcm.sms.SmsSender;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
 import org.whispersystems.textsecuregcm.storage.MessagesManager;
@@ -37,7 +36,6 @@ public class AccountControllerTest {
   private        AccountsManager        accountsManager        = mock(AccountsManager.class       );
   private        RateLimiters           rateLimiters           = mock(RateLimiters.class          );
   private        RateLimiter            rateLimiter            = mock(RateLimiter.class           );
-  private        SmsSender              smsSender              = mock(SmsSender.class             );
   private        MessagesManager        storedMessages         = mock(MessagesManager.class       );
   private        TimeProvider           timeProvider           = mock(TimeProvider.class          );
 
@@ -50,7 +48,6 @@ public class AccountControllerTest {
                                                             .addResource(new AccountController(pendingAccountsManager,
                                                                                                accountsManager,
                                                                                                rateLimiters,
-                                                                                               smsSender,
                                                                                                storedMessages,
                                                                                                timeProvider,
                                                                                                new HashMap<String, Integer>()))
@@ -59,8 +56,6 @@ public class AccountControllerTest {
 
   @Before
   public void setup() throws Exception {
-    when(rateLimiters.getVerifyLimiter()).thenReturn(rateLimiter);
-
     when(timeProvider.getCurrentTimeMillis()).thenReturn(System.currentTimeMillis());
   }
 

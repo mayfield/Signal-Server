@@ -23,10 +23,6 @@ import redis.clients.jedis.JedisPool;
 
 public class RateLimiters {
 
-  private final RateLimiter smsDestinationLimiter;
-  private final RateLimiter voiceDestinationLimiter;
-  private final RateLimiter verifyLimiter;
-
   private final RateLimiter attachmentLimiter;
   private final RateLimiter contactsLimiter;
   private final RateLimiter preKeysLimiter;
@@ -36,18 +32,6 @@ public class RateLimiters {
   private final RateLimiter verifyDeviceLimiter;
 
   public RateLimiters(RateLimitsConfiguration config, JedisPool cacheClient) {
-    this.smsDestinationLimiter = new RateLimiter(cacheClient, "smsDestination",
-                                                 config.getSmsDestination().getBucketSize(),
-                                                 config.getSmsDestination().getLeakRatePerMinute());
-
-    this.voiceDestinationLimiter = new RateLimiter(cacheClient, "voxDestination",
-                                                   config.getVoiceDestination().getBucketSize(),
-                                                   config.getVoiceDestination().getLeakRatePerMinute());
-
-    this.verifyLimiter = new RateLimiter(cacheClient, "verify",
-                                         config.getVerifyNumber().getBucketSize(),
-                                         config.getVerifyNumber().getLeakRatePerMinute());
-
     this.attachmentLimiter = new RateLimiter(cacheClient, "attachmentCreate",
                                              config.getAttachments().getBucketSize(),
                                              config.getAttachments().getLeakRatePerMinute());
@@ -97,17 +81,4 @@ public class RateLimiters {
   public RateLimiter getAttachmentLimiter() {
     return this.attachmentLimiter;
   }
-
-  public RateLimiter getSmsDestinationLimiter() {
-    return smsDestinationLimiter;
-  }
-
-  public RateLimiter getVoiceDestinationLimiter() {
-    return voiceDestinationLimiter;
-  }
-
-  public RateLimiter getVerifyLimiter() {
-    return verifyLimiter;
-  }
-
 }

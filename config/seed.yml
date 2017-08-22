@@ -5,16 +5,6 @@ trusted:
     partners:
         - name: PLACEHOLDER
 
-twilio:
-     numbers:
-         - PLACEHOLDER
-     accountId: MUST_SET_ACCOUNT_ID
-     accountToken: MUST_SET_ACCOUNT_TOKEN
-     localDomain: MUST_SET_LOCAL_DOMAIN
- 
-redphone:
-     authKey: #not-appliciable
- 
 push:
    host: localhost
    port: 9090
