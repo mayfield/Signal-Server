@@ -34,6 +34,8 @@ import org.whispersystems.textsecuregcm.auth.AuthorizationTokenGenerator;
 import org.whispersystems.textsecuregcm.auth.InvalidAuthorizationHeaderException;
 import org.whispersystems.textsecuregcm.entities.AccountAttributes;
 import org.whispersystems.textsecuregcm.entities.ApnRegistrationId;
+import org.whispersystems.textsecuregcm.entities.DeviceInfo;
+import org.whispersystems.textsecuregcm.entities.DeviceInfoList;
 import org.whispersystems.textsecuregcm.entities.DeviceResponse;
 import org.whispersystems.textsecuregcm.entities.GcmRegistrationId;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
@@ -49,6 +51,12 @@ import org.whispersystems.textsecuregcm.util.Util;
 import org.whispersystems.textsecuregcm.util.VerificationCode;
 import org.whispersystems.textsecuregcm.websocket.WebSocketConnection;
 
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import javax.validation.Valid;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -64,10 +72,6 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.Map;
 
 import static com.codahale.metrics.MetricRegistry.name;
 import io.dropwizard.auth.Auth;
@@ -186,8 +190,8 @@ public class AccountController {
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/user/{userId}")
   public DeviceResponse resetAccount(@Auth Partner trustedPartner,
-                               @PathParam("userId") String userId,
-                               @Valid AccountAttributes attrs) {
+                                     @PathParam("userId") String userId,
+                                     @Valid AccountAttributes attrs) {
     Optional<Account> priorAccount = accounts.get(userId);
     if (priorAccount.isPresent()) {
       logger.warn("Replacing existing account: " + userId);
@@ -217,6 +221,24 @@ public class AccountController {
     }
 
     return new DeviceResponse(device.getId());
+  }
+
+  @Timed
+  @GET
+  @Produces(MediaType.APPLICATION_JSON)
+  @Path("/user/{userId}")
+  public DeviceInfoList getAccount(@Auth Partner trustedPartner,
+                                   @PathParam("userId") String userId) {
+    Optional<Account> account = accounts.get(userId);
+    if (!account.isPresent()) {
+      throw new WebApplicationException(Response.status(404).build());
+    }
+    List<DeviceInfo> devices = new LinkedList<>();
+    for (Device device : account.get().getDevices()) {
+      devices.add(new DeviceInfo(device.getId(), device.getName(),
+                                 device.getLastSeen(), device.getCreated()));
+    }
+    return new DeviceInfoList(devices);
   }
 
   @VisibleForTesting protected VerificationCode generateVerificationCode(String number) {
