@@ -120,10 +120,6 @@ public class DeviceController {
       throw new DeviceLimitExceededException(account.getDevices().size(), MAX_DEVICES);
     }
 
-    if (account.getAuthenticatedDevice().get().getId() != Device.MASTER_ID) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-
     VerificationCode verificationCode = generateVerificationCode();
     pendingDevices.store(account.getNumber(), verificationCode.getVerificationCode());
 
