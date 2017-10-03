@@ -1,6 +1,8 @@
 package org.whispersystems.textsecuregcm.push;
 
 import com.google.common.base.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.textsecuregcm.controllers.NoSuchUserException;
 import org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope;
 import org.whispersystems.textsecuregcm.federation.FederatedClientManager;
@@ -14,6 +16,7 @@ import java.util.Set;
 
 public class ReceiptSender {
 
+  private static final Logger logger = LoggerFactory.getLogger(ReceiptSender.class);
   private final PushSender             pushSender;
   private final FederatedClientManager federatedClientManager;
   private final AccountsManager        accountManager;
@@ -67,8 +70,14 @@ public class ReceiptSender {
       message.setRelay(source.getRelay().get());
     }
 
-    for (Device destinationDevice : destinationDevices) {
-      pushSender.sendMessage(destinationAccount, destinationDevice, message.build());
+    for (Device device : destinationDevices) {
+      if (device.getGcmId() != null ||
+          device.getApnId() != null ||
+          device.getFetchesMessages()) {
+        pushSender.sendMessage(destinationAccount, device, message.build());
+      } else {
+        logger.warn("Not sending delivery receipt to stale device " + device);
+      }
     }
   }
 
