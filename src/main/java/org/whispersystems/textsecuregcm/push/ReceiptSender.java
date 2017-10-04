@@ -76,7 +76,8 @@ public class ReceiptSender {
           device.getFetchesMessages()) {
         pushSender.sendMessage(destinationAccount, device, message.build());
       } else {
-        logger.warn("Not sending delivery receipt to stale device " + device);
+        String staleDevice = "" + destinationAccount.getNumber() + "." + device.getId();
+        logger.warn("Not sending delivery receipt to stale device: " + staleDevice);
       }
     }
   }
