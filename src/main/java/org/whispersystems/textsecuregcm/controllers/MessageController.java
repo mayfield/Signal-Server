@@ -169,6 +169,7 @@ public class MessageController {
       throws NoSuchUserException, MismatchedDevicesException, StaleDevicesException
   {
     Account destination;
+    boolean found = false;
 
     if (!isSyncMessage) destination = getDestinationAccount(destinationName);
     else                destination = source;
@@ -180,17 +181,21 @@ public class MessageController {
       Optional<Device> destinationDevice = destination.getDevice(incomingMessage.getDestinationDeviceId());
 
       if (destinationDevice.isPresent()) {
-        sendLocalMessage(source, destination, destinationDevice.get(), messages.getTimestamp(), incomingMessage);
+        if (sendLocalMessage(source, destination, destinationDevice.get(), messages.getTimestamp(), incomingMessage)) {
+          found = true;
+        }
       }
+    }
+    if (!found) {
+      throw new NoSuchUserException(destinationName);
     }
   }
 
-  private void sendLocalMessage(Account source,
-                                Account destinationAccount,
-                                Device destinationDevice,
-                                long timestamp,
-                                IncomingMessage incomingMessage)
-      throws NoSuchUserException
+  private boolean sendLocalMessage(Account source,
+                                   Account destinationAccount,
+                                   Device destinationDevice,
+                                   long timestamp,
+                                   IncomingMessage incomingMessage)
   {
     try {
       Optional<byte[]> messageBody    = getMessageBody(incomingMessage);
@@ -216,9 +221,10 @@ public class MessageController {
 
       pushSender.sendMessage(destinationAccount, destinationDevice, messageBuilder.build());
     } catch (NotPushRegisteredException e) {
-      if (destinationDevice.isMaster()) throw new NoSuchUserException(e);
-      else                              logger.debug("Not registered", e);
+      logger.warn("Device not registered", e);
+      return false;
     }
+    return true;
   }
 
   private void sendRelayMessage(Account source,

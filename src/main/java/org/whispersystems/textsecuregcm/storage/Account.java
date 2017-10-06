@@ -105,8 +105,7 @@ public class Account {
 
   public boolean isActive() {
     return
-        getMasterDevice().isPresent() &&
-        getMasterDevice().get().isActive() &&
+        getActiveDeviceCount() > 0 &&
         getLastSeen() > (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(365));
   }
 
