@@ -58,8 +58,8 @@ public class RedisClientFactory implements RedisPubSubConnectionFactory {
      * See: https://devcenter.heroku.com/articles/heroku-redis#connecting-in-java
      */
     JedisPoolConfig poolConfig = new JedisPoolConfig();
-    poolConfig.setMaxTotal(10);
-    poolConfig.setMaxIdle(5);
+    poolConfig.setMaxTotal(8);
+    poolConfig.setMaxIdle(4);
     poolConfig.setMinIdle(1);
     poolConfig.setTestOnBorrow(true);
     poolConfig.setTestOnReturn(true);
