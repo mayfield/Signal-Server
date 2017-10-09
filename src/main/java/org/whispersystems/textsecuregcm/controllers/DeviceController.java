@@ -98,10 +98,6 @@ public class DeviceController {
   @DELETE
   @Path("/{device_id}")
   public void removeDevice(@Auth Account account, @PathParam("device_id") long deviceId) {
-    if (account.getAuthenticatedDevice().get().getId() != Device.MASTER_ID) {
-      throw new WebApplicationException(Response.Status.UNAUTHORIZED);
-    }
-
     account.removeDevice(deviceId);
     accounts.update(account);
     messages.clear(account.getNumber(), deviceId);
