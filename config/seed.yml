@@ -6,58 +6,59 @@ trusted:
         - name: PLACEHOLDER
 
 push:
-   host: localhost
-   port: 9090
-   username: MUST_SET_PUSH_USER
-   password: MUST_SET_PUSH_PASS
+    host: localhost
+    port: 9090
+    username: MUST_SET_PUSH_USER
+    password: MUST_SET_PUSH_PASS
  
 s3:
-     accessKey: MUST_SET_S3_ACCESSKEY
-     accessSecret: MUST_SET_S3_ACCESSSECRET
-     attachmentsBucket: MUST_SET_ATTACHMENTSBUCKET
+    accessKey: MUST_SET_S3_ACCESSKEY
+    accessSecret: MUST_SET_S3_ACCESSSECRET
+    attachmentsBucket: MUST_SET_ATTACHMENTSBUCKET
  
 server:
-     applicationConnectors:
-         - type: http
-           port: 8180
+    applicationConnectors:
+        - type: http
+          port: 8180
  
-     adminConnectors:
-         - type: http
-           port: 8181
+    adminConnectors:
+        - type: http
+          port: 8181
  
 directory:
-     url: "redis://localhost:6379/0"
+    url: "redis://localhost:6379/0"
  
 cache:
-     url: "redis://localhost:6379/1"
+    url: "redis://localhost:6379/1"
  
 messageStore:
-     driverClass: org.postgresql.Driver
-     properties:
-         charSet: UTF-8
+    driverClass: org.postgresql.Driver
+    properties:
+        charSet: UTF-8
  
 database:
-     driverClass: org.postgresql.Driver
-     properties:
-         charSet: UTF-8
+   driverClass: org.postgresql.Driver
+     
+   properties:
+       charSet: UTF-8
  
 limits:
-     prekeys:
-       bucketSize: 100
-       leakRatePerMinute: 50
+    prekeys:
+        bucketSize: 100
+        leakRatePerMinute: 50
  
-     messages:
-       bucketSize: 1000
-       leakRatePerMinute: 500
+    messages:
+        bucketSize: 1000
+        leakRatePerMinute: 500
  
-     attachments:
-       bucketSize: 1000
-       leakRatePerMinute: 100
+    attachments:
+        bucketSize: 1000
+        leakRatePerMinute: 100
  
-     allocateDevice:
-       bucketSize: 10
-       leakRatePerMinute: 5
+    allocateDevice:
+        bucketSize: 10
+        leakRatePerMinute: 5
  
-     verifyDevice:
-       bucketSize: 10
-       leakRatePerMinute: 5
+    verifyDevice:
+        bucketSize: 10
+        leakRatePerMinute: 5
