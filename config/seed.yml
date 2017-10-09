@@ -37,10 +37,12 @@ messageStore:
         charSet: UTF-8
  
 database:
-   driverClass: org.postgresql.Driver
-     
-   properties:
+    driverClass: org.postgresql.Driver
+    properties:
        charSet: UTF-8
+    initialSize: 4
+    minSize: 4
+    maxSize: 8
  
 limits:
     prekeys:
