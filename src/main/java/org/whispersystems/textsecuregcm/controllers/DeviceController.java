@@ -116,9 +116,15 @@ public class DeviceController {
       throw new DeviceLimitExceededException(account.getDevices().size(), MAX_DEVICES);
     }
 
-    VerificationCode verificationCode = generateVerificationCode();
-    pendingDevices.store(account.getNumber(), verificationCode.getVerificationCode());
-
+    String number = account.getNumber();
+    VerificationCode verificationCode;
+    Optional<String> existingCode = pendingDevices.getCodeForNumber(number);
+    if (existingCode.isPresent()) {
+      verificationCode = new VerificationCode(Integer.parseInt(existingCode.get()));
+    } else {
+      verificationCode = generateVerificationCode();
+      pendingDevices.store(number, verificationCode.getVerificationCode());
+    }
     return verificationCode;
   }
 
