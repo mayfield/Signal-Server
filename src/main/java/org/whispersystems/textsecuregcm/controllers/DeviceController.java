@@ -169,6 +169,12 @@ public class DeviceController {
 
       account.get().addDevice(device);
       accounts.update(account.get());
+      // Race conditions during device delete permit messages to remain
+      // enqueued in the message database indefinitely.  We may happen
+      // to reuse one of these device ids and inadvertently send this 
+      // new device messages intended for a long since deleted device.
+      // TL;DR; Ensure that this device has a clean slate...
+      messages.clear(account.get().getNumber(), device.getId());
 
       pendingDevices.remove(number);
 
