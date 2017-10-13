@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.whispersystems.dropwizard.simpleauth.AuthValueFactoryProvider;
-import org.whispersystems.textsecuregcm.controllers.FederationControllerV1;
 import org.whispersystems.textsecuregcm.controllers.FederationControllerV2;
 import org.whispersystems.textsecuregcm.controllers.KeysControllerV2;
 import org.whispersystems.textsecuregcm.controllers.MessageController;
@@ -70,7 +69,6 @@ public class FederatedControllerTest {
                                                             .addProvider(AuthHelper.getAuthFilter())
                                                             .addProvider(new AuthValueFactoryProvider.Binder())
                                                             .setTestContainerFactory(new GrizzlyWebTestContainerFactory())
-                                                            .addResource(new FederationControllerV1(accountsManager, null, messageController, null))
                                                             .addResource(new FederationControllerV2(accountsManager, null, messageController, keysControllerV2))
                                                             .build();
 

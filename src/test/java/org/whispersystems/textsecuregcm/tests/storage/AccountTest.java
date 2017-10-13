@@ -15,21 +15,21 @@ import static org.mockito.Mockito.when;
 
 public class AccountTest {
 
-  private final Device oldMasterDevice       = mock(Device.class);
-  private final Device recentMasterDevice    = mock(Device.class);
+  private final Device oldFirstDevice       = mock(Device.class);
+  private final Device recentFirstDevice    = mock(Device.class);
   private final Device agingSecondaryDevice  = mock(Device.class);
   private final Device recentSecondaryDevice = mock(Device.class);
   private final Device oldSecondaryDevice    = mock(Device.class);
 
   @Before
   public void setup() {
-    when(oldMasterDevice.getLastSeen()).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(366));
-    when(oldMasterDevice.isActive()).thenReturn(true);
-    when(oldMasterDevice.getId()).thenReturn(Device.MASTER_ID);
+    when(oldFirstDevice.getLastSeen()).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(366));
+    when(oldFirstDevice.isActive()).thenReturn(true);
+    when(oldFirstDevice.getId()).thenReturn(1L);
 
-    when(recentMasterDevice.getLastSeen()).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
-    when(recentMasterDevice.isActive()).thenReturn(true);
-    when(recentMasterDevice.getId()).thenReturn(Device.MASTER_ID);
+    when(recentFirstDevice.getLastSeen()).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(1));
+    when(recentFirstDevice.isActive()).thenReturn(true);
+    when(recentFirstDevice.getId()).thenReturn(1L);
 
     when(agingSecondaryDevice.getLastSeen()).thenReturn(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(31));
     when(agingSecondaryDevice.isActive()).thenReturn(false);
@@ -47,21 +47,21 @@ public class AccountTest {
   @Test
   public void testAccountActive() {
     Account recentAccount = new Account("+14152222222", new HashSet<Device>() {{
-      add(recentMasterDevice);
+      add(recentFirstDevice);
       add(recentSecondaryDevice);
     }});
 
     assertTrue(recentAccount.isActive());
 
     Account oldSecondaryAccount = new Account("+14152222222", new HashSet<Device>() {{
-      add(recentMasterDevice);
+      add(recentFirstDevice);
       add(agingSecondaryDevice);
     }});
 
     assertTrue(oldSecondaryAccount.isActive());
 
     Account agingPrimaryAccount = new Account("+14152222222", new HashSet<Device>() {{
-      add(oldMasterDevice);
+      add(oldFirstDevice);
       add(agingSecondaryDevice);
     }});
 
@@ -71,7 +71,7 @@ public class AccountTest {
   @Test
   public void testAccountInactive() {
     Account oldPrimaryAccount = new Account("+14152222222", new HashSet<Device>() {{
-      add(oldMasterDevice);
+      add(oldFirstDevice);
       add(oldSecondaryDevice);
     }});
 

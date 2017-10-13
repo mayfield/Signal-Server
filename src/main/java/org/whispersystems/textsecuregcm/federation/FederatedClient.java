@@ -106,21 +106,6 @@ public class FederatedClient {
     }
   }
 
-  public Optional<PreKeyResponseV1> getKeysV1(String destination, String device) {
-    try {
-      PreKeyResponseV1 response = client.target(peer.getUrl())
-                                        .path(String.format(PREKEY_PATH_DEVICE_V1, destination, device))
-                                        .request()
-                                        .accept(MediaType.APPLICATION_JSON_TYPE)
-                                        .get(PreKeyResponseV1.class);
-
-      return Optional.of(response);
-    } catch (ProcessingException e) {
-      logger.warn("PreKey", e);
-      return Optional.absent();
-    }
-  }
-
   public Optional<PreKeyResponseV2> getKeysV2(String destination, String device) {
     try {
       PreKeyResponseV2 response = client.target(peer.getUrl())
