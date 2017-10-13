@@ -42,6 +42,9 @@ public class Account {
   @JsonIgnore
   private Device authenticatedDevice;
 
+  @JsonProperty
+  private long deviceIdHighMark;
+
   public Account() {}
 
   @VisibleForTesting
@@ -69,6 +72,9 @@ public class Account {
   public void addDevice(Device device) {
     this.devices.remove(device);
     this.devices.add(device);
+    if (deviceIdHighMark == 0 || device.getId() > deviceIdHighMark) {
+      this.deviceIdHighMark = device.getId();
+    }
   }
 
   public void removeDevice(long deviceId) {
@@ -110,7 +116,7 @@ public class Account {
   }
 
   public long getNextDeviceId() {
-    long highestDevice = Device.MASTER_ID;
+    long highestDevice = deviceIdHighMark == 0 ? Device.MASTER_ID : deviceIdHighMark;
 
     for (Device device : devices) {
       if (!device.isActive()) {
