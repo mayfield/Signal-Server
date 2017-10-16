@@ -85,10 +85,6 @@ public class Account {
     return devices;
   }
 
-  public Optional<Device> getMasterDevice() {
-    return getDevice(Device.MASTER_ID);
-  }
-
   public Optional<Device> getDevice(long deviceId) {
     for (Device device : devices) {
       if (device.getId() == deviceId) {
@@ -116,12 +112,11 @@ public class Account {
   }
 
   public long getNextDeviceId() {
-    long highestDevice = deviceIdHighMark == 0 ? Device.MASTER_ID : deviceIdHighMark;
+    long highestDevice = deviceIdHighMark == 0 ? 1 : deviceIdHighMark;
 
+    /* As a precaution for older databases that didn't use deviceIdHighMark. */
     for (Device device : devices) {
-      if (!device.isActive()) {
-        return device.getId();
-      } else if (device.getId() > highestDevice) {
+      if (device.getId() > highestDevice) {
         highestDevice = device.getId();
       }
     }

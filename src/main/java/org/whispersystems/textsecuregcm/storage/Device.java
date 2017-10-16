@@ -26,8 +26,6 @@ import java.util.concurrent.TimeUnit;
 
 public class Device {
 
-  public static final long MASTER_ID = 1;
-
   @JsonProperty
   private long    id;
 
@@ -194,8 +192,7 @@ public class Device {
   public boolean isActive() {
     boolean hasChannel = fetchesMessages || !Util.isEmpty(getApnId()) || !Util.isEmpty(getGcmId());
 
-    return (id == MASTER_ID && hasChannel && signedPreKey != null) ||
-           (id != MASTER_ID && hasChannel && signedPreKey != null && lastSeen > (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(90)));
+    return hasChannel && signedPreKey != null && lastSeen > (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(90));
   }
 
   public boolean getFetchesMessages() {
@@ -204,10 +201,6 @@ public class Device {
 
   public void setFetchesMessages(boolean fetchesMessages) {
     this.fetchesMessages = fetchesMessages;
-  }
-
-  public boolean isMaster() {
-    return getId() == MASTER_ID;
   }
 
   public int getRegistrationId() {

@@ -193,14 +193,16 @@ public class AccountController {
                                      @PathParam("userId") String userId,
                                      @Valid AccountAttributes attrs) {
     Optional<Account> priorAccount = accounts.get(userId);
+    long deviceId = 1;
     if (priorAccount.isPresent()) {
       logger.warn("Replacing existing account: " + userId);
+      deviceId = priorAccount.get().getNextDeviceId();
     } else {
       logger.info("Creating account: " + userId);
     }
 
     Device device = new Device();
-    device.setId(Device.MASTER_ID);
+    device.setId(deviceId);
     device.setName(attrs.getName());
     device.setUserAgent(attrs.getUserAgent());
     device.setAuthenticationCredentials(new AuthenticationCredentials(attrs.getPassword()));
