@@ -166,7 +166,10 @@ public class MessageController {
                                 String destinationName,
                                 IncomingMessageList messages,
                                 boolean isSyncMessage)
-      throws NoSuchUserException, MismatchedDevicesException, StaleDevicesException
+      throws NoSuchUserException,
+             MismatchedDevicesException,
+             StaleDevicesException,
+             InvalidDestinationException
   {
     Account destination = isSyncMessage ? source : getDestinationAccount(destinationName);
     boolean found = false;
@@ -277,13 +280,14 @@ public class MessageController {
   private void validateCompleteDeviceList(Account account,
                                           List<IncomingMessage> messages,
                                           boolean isSyncMessage)
-      throws MismatchedDevicesException
+      throws MismatchedDevicesException, InvalidDestinationException
   {
     Set<Long> messageDeviceIds = new HashSet<>();
     Set<Long> accountDeviceIds = new HashSet<>();
 
     List<Long> missingDeviceIds = new LinkedList<>();
     List<Long> extraDeviceIds   = new LinkedList<>();
+    List<Long> dupCheck         = new LinkedList<>();
 
     for (IncomingMessage message : messages) {
       messageDeviceIds.add(message.getDestinationDeviceId());
@@ -302,8 +306,13 @@ public class MessageController {
     }
 
     for (IncomingMessage message : messages) {
-      if (!accountDeviceIds.contains(message.getDestinationDeviceId())) {
-        extraDeviceIds.add(message.getDestinationDeviceId());
+      Long deviceId = message.getDestinationDeviceId();
+      if (dupCheck.contains(deviceId)) {
+        throw new InvalidDestinationException("Duplicate device id used in messages array");
+      }
+      dupCheck.add(deviceId);
+      if (!accountDeviceIds.contains(deviceId)) {
+        extraDeviceIds.add(deviceId);
       }
     }
 
