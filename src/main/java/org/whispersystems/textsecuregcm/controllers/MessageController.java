@@ -168,11 +168,8 @@ public class MessageController {
                                 boolean isSyncMessage)
       throws NoSuchUserException, MismatchedDevicesException, StaleDevicesException
   {
-    Account destination;
+    Account destination = isSyncMessage ? source : getDestinationAccount(destinationName);
     boolean found = false;
-
-    if (!isSyncMessage) destination = getDestinationAccount(destinationName);
-    else                destination = source;
 
     validateCompleteDeviceList(destination, messages.getMessages(), isSyncMessage);
     validateRegistrationIds(destination, messages.getMessages());
@@ -186,7 +183,7 @@ public class MessageController {
         }
       }
     }
-    if (!found) {
+    if (!found && !isSyncMessage) {
       throw new NoSuchUserException(destinationName);
     }
   }
