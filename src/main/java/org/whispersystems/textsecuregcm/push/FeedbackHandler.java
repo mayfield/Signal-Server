@@ -86,7 +86,6 @@ public class FeedbackHandler implements Managed, Runnable {
               device.get().setGcmId(event.getCanonicalId());
             } else {
               device.get().setGcmId(null);
-              device.get().setFetchesMessages(false);
             }
             accountsManager.update(account.get());
           }

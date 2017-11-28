@@ -114,10 +114,7 @@ public class AccountController {
     device.setApnId(null);
     device.setVoipApnId(null);
     device.setGcmId(registrationId.getGcmRegistrationId());
-
-    if (registrationId.isWebSocketChannel()) device.setFetchesMessages(true);
-    else                                     device.setFetchesMessages(false);
-
+    device.setFetchesMessages(true);
     accounts.update(account);
   }
 
@@ -127,7 +124,6 @@ public class AccountController {
   public void deleteGcmRegistrationId(@Auth Account account) {
     Device device = account.getAuthenticatedDevice().get();
     device.setGcmId(null);
-    device.setFetchesMessages(false);
     accounts.update(account);
   }
 
@@ -150,7 +146,6 @@ public class AccountController {
   public void deleteApnRegistrationId(@Auth Account account) {
     Device device = account.getAuthenticatedDevice().get();
     device.setApnId(null);
-    device.setFetchesMessages(false);
     accounts.update(account);
   }
 
