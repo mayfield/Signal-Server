@@ -1,5 +1,10 @@
 logging:
     level: INFO
+    appenders:
+        - type: console
+          threshold: ERROR
+        - type: console
+          threshold: ALL
 
 trusted:
     partners:
@@ -17,10 +22,10 @@ s3:
     attachmentsBucket: MUST_SET_ATTACHMENTSBUCKET
  
 server:
+    minThreads: 4
     applicationConnectors:
         - type: http
           port: 8180
- 
     adminConnectors:
         - type: http
           port: 8181
