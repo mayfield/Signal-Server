@@ -71,13 +71,8 @@ public class ReceiptSender {
     }
 
     for (Device device : destinationDevices) {
-      if (device.getGcmId() != null ||
-          device.getApnId() != null ||
-          device.getFetchesMessages()) {
+      if (device.isActive()) {
         pushSender.sendMessage(destinationAccount, device, message.build());
-      } else {
-        String staleDevice = "" + destinationAccount.getNumber() + "." + device.getId();
-        logger.warn("Not sending delivery receipt to stale device: " + staleDevice);
       }
     }
   }
