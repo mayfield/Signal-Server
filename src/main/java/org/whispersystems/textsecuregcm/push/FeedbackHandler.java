@@ -44,19 +44,15 @@ public class FeedbackHandler implements Managed, Runnable {
 
   @Override
   public void run() {
-    logger.info("Checking Push Server feedback...");
+    logger.debug("Checking Push Server feedback...");
 
     try {
       List<UnregisteredEvent> gcmFeedback = client.getGcmFeedback();
       List<UnregisteredEvent> apnFeedback = client.getApnFeedback();
 
-      logger.info("Got GCM feedback: " + gcmFeedback.size());
-      logger.info("Got APN feedback: " + apnFeedback.size());
-
       for (UnregisteredEvent gcmEvent : gcmFeedback) {
         handleGcmUnregistered(gcmEvent);
       }
-
       for (UnregisteredEvent apnEvent : apnFeedback) {
         handleApnUnregistered(apnEvent);
       }
@@ -66,7 +62,7 @@ public class FeedbackHandler implements Managed, Runnable {
   }
 
   private void handleGcmUnregistered(UnregisteredEvent event) {
-    logger.info("Got GCM Unregistered: " + event.getNumber() + "," + event.getDeviceId());
+    logger.warn("Got GCM Unregistered: " + event.getNumber() + "." + event.getDeviceId());
 
     Optional<Account> account = accountsManager.get(event.getNumber());
 
@@ -95,7 +91,7 @@ public class FeedbackHandler implements Managed, Runnable {
   }
 
   private void handleApnUnregistered(UnregisteredEvent event) {
-    logger.info("Got APN Unregistered: " + event.getNumber() + "," + event.getDeviceId());
+    logger.warn("Got APN Unregistered: " + event.getNumber() + "." + event.getDeviceId());
 
     Optional<Account> account = accountsManager.get(event.getNumber());
 
