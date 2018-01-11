@@ -169,7 +169,12 @@ public class DeviceController {
         throw new WebApplicationException(Response.status(403).build());
       }
 
-      if (account.get().getActiveDeviceCount() >= MAX_DEVICES) {
+      int maxDeviceLimit = MAX_DEVICES;
+      if (maxDeviceConfiguration.containsKey(account.get().getNumber())) {
+        maxDeviceLimit = maxDeviceConfiguration.get(account.get().getNumber());
+      }
+
+      if (account.get().getActiveDeviceCount() >= maxDevicesLimit) {
         throw new DeviceLimitExceededException(account.get().getDevices().size(), MAX_DEVICES);
       }
 
