@@ -4,6 +4,9 @@
   "scripts": {
   },
   "env": {
+    "APN_BUNDLEID": {
+      "required": true
+    },
     "APN_KEY": {
       "required": true
     },
