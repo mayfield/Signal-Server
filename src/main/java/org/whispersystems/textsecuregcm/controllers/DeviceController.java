@@ -174,7 +174,7 @@ public class DeviceController {
         maxDeviceLimit = maxDeviceConfiguration.get(account.get().getNumber());
       }
 
-      if (account.get().getActiveDeviceCount() >= maxDevicesLimit) {
+      if (account.get().getActiveDeviceCount() >= maxDeviceLimit) {
         throw new DeviceLimitExceededException(account.get().getDevices().size(), MAX_DEVICES);
       }
 

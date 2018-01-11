@@ -101,7 +101,7 @@ public class WhisperServerConfiguration extends Configuration {
 
   @Valid
   @JsonProperty
-  private WebSocketConfiguration websocket = new WebSocketConfiguration();
+  private WebSocketConfiguration webSocket = new WebSocketConfiguration();
 
   @Valid
   @NotNull
