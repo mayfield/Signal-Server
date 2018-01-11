@@ -104,7 +104,7 @@ public class MessageControllerTest {
 
     assertThat("Good Response", response.getStatus(), is(equalTo(200)));
 
-    verify(pushSender, times(1)).sendMessage(any(Account.class), any(Device.class), any(Envelope.class));
+    verify(pushSender, times(1)).sendMessage(any(Account.class), any(Device.class), any(Envelope.class), eq(false));
   }
 
   @Test
@@ -157,7 +157,7 @@ public class MessageControllerTest {
 
     assertThat("Good Response Code", response.getStatus(), is(equalTo(200)));
 
-    verify(pushSender, times(2)).sendMessage(any(Account.class), any(Device.class), any(Envelope.class));
+    verify(pushSender, times(2)).sendMessage(any(Account.class), any(Device.class), any(Envelope.class), eq(false));
   }
 
   @Test
@@ -209,6 +209,30 @@ public class MessageControllerTest {
 
     assertEquals(response.getMessages().get(0).getTimestamp(), timestampOne);
     assertEquals(response.getMessages().get(1).getTimestamp(), timestampTwo);
+  }
+
+  @Test
+  public synchronized void testGetMessagesBadAuth() throws Exception {
+    final long timestampOne = 313377;
+    final long timestampTwo = 313388;
+
+    List<OutgoingMessageEntity> messages = new LinkedList<OutgoingMessageEntity>() {{
+      add(new OutgoingMessageEntity(1L, Envelope.Type.CIPHERTEXT_VALUE, null, timestampOne, "+14152222222", 2, "hi there".getBytes(), null));
+      add(new OutgoingMessageEntity(2L, Envelope.Type.RECEIPT_VALUE, null, timestampTwo, "+14152222222", 2, null, null));
+    }};
+
+    OutgoingMessageEntityList messagesList = new OutgoingMessageEntityList(messages, false);
+
+    when(messagesManager.getMessagesForDevice(eq(AuthHelper.VALID_NUMBER), eq(1L))).thenReturn(messagesList);
+
+    Response response =
+        resources.getJerseyTest().target("/v1/messages/")
+                 .request()
+                 .header("Authorization", AuthHelper.getAuthHeader(AuthHelper.VALID_NUMBER, AuthHelper.INVALID_PASSWORD))
+                 .accept(MediaType.APPLICATION_JSON_TYPE)
+                 .get();
+
+    assertThat("Unauthorized response", response.getStatus(), is(equalTo(401)));
   }
 
   @Test

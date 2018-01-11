@@ -111,6 +111,13 @@ public class AccountController {
   @Consumes(MediaType.APPLICATION_JSON)
   public void setGcmRegistrationId(@Auth Account account, @Valid GcmRegistrationId registrationId) {
     Device device = account.getAuthenticatedDevice().get();
+
+    if (device.getGcmId() != null &&
+        device.getGcmId().equals(registrationId.getGcmRegistrationId()))
+    {
+      return;
+    }
+
     device.setApnId(null);
     device.setVoipApnId(null);
     device.setGcmId(registrationId.getGcmRegistrationId());
@@ -239,16 +246,12 @@ public class AccountController {
   }
 
   @VisibleForTesting protected VerificationCode generateVerificationCode(String number) {
-    try {
-      if (testDevices.containsKey(number)) {
-        return new VerificationCode(testDevices.get(number));
-      }
-
-      SecureRandom random = SecureRandom.getInstance("SHA1PRNG");
-      int randomInt       = 100000 + random.nextInt(900000);
-      return new VerificationCode(randomInt);
-    } catch (NoSuchAlgorithmException e) {
-      throw new AssertionError(e);
+    if (testDevices.containsKey(number)) {
+      return new VerificationCode(testDevices.get(number));
     }
+
+    SecureRandom random = new SecureRandom();
+    int randomInt       = 100000 + random.nextInt(900000);
+    return new VerificationCode(randomInt);
   }
 }

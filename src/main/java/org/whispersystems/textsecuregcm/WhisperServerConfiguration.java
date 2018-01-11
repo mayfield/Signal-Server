@@ -17,9 +17,12 @@
 package org.whispersystems.textsecuregcm;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.whispersystems.textsecuregcm.configuration.ApnConfiguration;
 import org.whispersystems.textsecuregcm.configuration.FederationConfiguration;
+import org.whispersystems.textsecuregcm.configuration.GcmConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GraphiteConfiguration;
+import org.whispersystems.textsecuregcm.configuration.MaxDeviceConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PushConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RateLimitsConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RedisConfiguration;
@@ -71,6 +74,11 @@ public class WhisperServerConfiguration extends Configuration {
   private List<TestDeviceConfiguration> testDevices = new LinkedList<>();
 
   @Valid
+  @NotNull
+  @JsonProperty
+  private List<MaxDeviceConfiguration> maxDevices = new LinkedList<>();
+
+  @Valid
   @JsonProperty
   private FederationConfiguration federation = new FederationConfiguration();
 
@@ -93,16 +101,25 @@ public class WhisperServerConfiguration extends Configuration {
 
   @Valid
   @JsonProperty
-  private WebSocketConfiguration websocket = new WebSocketConfiguration();
+  private WebSocketConfiguration webSocket = new WebSocketConfiguration();
 
   @Valid
   @NotNull
   @JsonProperty
   private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
+  @Valid
+  @NotNull
+  @JsonProperty
+  private GcmConfiguration gcm;
+
+  @Valid
+  @NotNull
+  @JsonProperty
+  private ApnConfiguration apn;
 
   public WebSocketConfiguration getWebSocketConfiguration() {
-    return websocket;
+    return webSocket;
   }
 
   public PushConfiguration getPushConfiguration() {
@@ -149,6 +166,14 @@ public class WhisperServerConfiguration extends Configuration {
     return trusted;
   }
 
+  public GcmConfiguration getGcmConfiguration() {
+    return gcm;
+  }
+
+  public ApnConfiguration getApnConfiguration() {
+    return apn;
+  }
+
   public Map<String, Integer> getTestDevices() {
     Map<String, Integer> results = new HashMap<>();
 
@@ -159,4 +184,16 @@ public class WhisperServerConfiguration extends Configuration {
 
     return results;
   }
+
+  public Map<String, Integer> getMaxDevices() {
+    Map<String, Integer> results = new HashMap<>();
+
+    for (MaxDeviceConfiguration maxDeviceConfiguration : maxDevices) {
+      results.put(maxDeviceConfiguration.getNumber(),
+                  maxDeviceConfiguration.getCount());
+    }
+
+    return results;
+  }
+
 }

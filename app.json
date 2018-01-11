@@ -4,19 +4,16 @@
   "scripts": {
   },
   "env": {
-    "PUSHSERVER_HOST": {
+    "APN_KEY": {
       "required": true
     },
-    "PUSHSERVER_PASSWORD": {
+    "APN_CERT": {
       "required": true
     },
-    "PUSHSERVER_PORT": {
+    "GCM_SENDERID": {
       "required": true
     },
-    "PUSHSERVER_QUEUESIZE": {
-      "required": true
-    },
-    "PUSHSERVER_USERNAME": {
+    "GCM_APIKEY": {
       "required": true
     },
     "S3_ACCESSKEY": {
@@ -37,7 +34,5 @@
     "as": "MESSAGE_DATABASE"
   }, {
     "plan": "heroku-redis"
-  }],
-  "buildpacks": [
-  ]
+  }]
 }
