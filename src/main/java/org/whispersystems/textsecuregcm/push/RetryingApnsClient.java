@@ -30,6 +30,7 @@ import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
@@ -104,14 +105,24 @@ public class RetryingApnsClient {
     apnsClient.disconnect();
   }
 
-  private static X509Certificate initializeCertificate(String pemCertificate) throws IOException {
-    PEMReader reader = new PEMReader(new InputStreamReader(new ByteArrayInputStream(pemCertificate.getBytes())));
-    return (X509Certificate) reader.readObject();
+  private static X509Certificate initializeCertificate(String b64PemCertificate) throws IOException {
+    byte[] pemCertificate = Base64.getDecoder().decode(b64PemCertificate.getBytes());
+    PEMReader reader = new PEMReader(new InputStreamReader(new ByteArrayInputStream(pemCertificate)));
+    X509Certificate cert = (X509Certificate) reader.readObject();
+    if (cert == null) {
+        throw new IOException("Invalid base64 encoded PEM (cert)");
+    }
+    return cert;
   }
 
-  private static PrivateKey initializePrivateKey(String pemKey) throws IOException {
-    PEMReader reader = new PEMReader(new InputStreamReader(new ByteArrayInputStream(pemKey.getBytes())));
-    return ((KeyPair) reader.readObject()).getPrivate();
+  private static PrivateKey initializePrivateKey(String b64PemKey) throws IOException {
+    byte[] pemKey = Base64.getDecoder().decode(b64PemKey.getBytes());
+    PEMReader reader = new PEMReader(new InputStreamReader(new ByteArrayInputStream(pemKey)));
+    KeyPair keyPair = (KeyPair) reader.readObject();
+    if (keyPair == null) {
+        throw new IOException("Invalid base64 encoded PEM (key)");
+    }
+    return keyPair.getPrivate();
   }
 
   private static final class ResponseHandler implements GenericFutureListener<io.netty.util.concurrent.Future<PushNotificationResponse<SimpleApnsPushNotification>>> {
