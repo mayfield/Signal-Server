@@ -3,7 +3,7 @@ default: build
 ACCOUNT_DATABASE_URL ?= postgres://postgres:NOPE@localhost:5432/account
 MESSAGE_DATABASE_URL ?= postgres://postgres:NOPE@localhost:5432/message
 
-VERSION := 0.99.1
+VERSION := 1.49
 TARGET := target/TextSecureServer-$(VERSION).jar
 CONFIG := config/seed.yml
 JAVA := java $(JAVA_OPTS)
@@ -19,10 +19,6 @@ get_db_host = $(shell echo $(1) | awk -F'@' {'print $$2'})
 ifset = $(if $(1),$(2)="$(1)")
 
 ARGS := \
-		$(call ifset,$(PUSHSERVER_HOST),-Ddw.push.host) \
-		$(call ifset,$(PUSHSERVER_PORT),-Ddw.push.port) \
-		$(call ifset,$(PUSHSERVER_USERNAME),-Ddw.push.username) \
-		$(call ifset,$(PUSHSERVER_PASSWORD),-Ddw.push.password) \
 		$(call ifset,$(S3_ACCESSKEY),-Ddw.s3.accessKey) \
 		$(call ifset,$(S3_ACCESSSECRET),-Ddw.s3.accessSecret) \
 		$(call ifset,$(S3_ATTACHMENTSBUCKET),-Ddw.s3.attachmentsBucket) \
@@ -31,6 +27,10 @@ ARGS := \
 		$(call ifset,$(PORT),-Ddw.server.applicationConnectors[0].port) \
 		$(call ifset,$(ADMIN_PORT),-Ddw.server.adminConnectors[0].port) \
 		$(call ifset,$(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].token) \
+		$(call ifset,$(GCM_SENDERID),-Ddw.gcm.senderId) \
+		$(call ifset,$(GCM_APIKEY),-Ddw.gcm.apiKey) \
+		$(call ifset,$(APN_CERT),-Ddw.apn.pushCertificate) \
+		$(call ifset,$(APN_KEY),-Ddw.apn.pushKey) \
 		$(if $(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].name=CCSM) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].type=raven) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].threshold=WARN) \
