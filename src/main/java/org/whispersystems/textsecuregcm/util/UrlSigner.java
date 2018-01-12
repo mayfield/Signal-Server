@@ -23,7 +23,6 @@ import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.S3ClientOptions;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import org.whispersystems.textsecuregcm.configuration.S3Configuration;
 
@@ -45,8 +44,8 @@ public class UrlSigner {
     this.s3client    = AmazonS3Client.builder()
                                      .withCredentials(credentialsProvider)
                                      .withRegion(config.getRegion())
+                                     .enableAccelerateMode()
                                      .build();
-    s3client.setS3ClientOptions(S3ClientOptions.builder().setAccelerateModeEnabled(true).build());
   }
 
   public URL getPreSignedUrl(long attachmentId, HttpMethod method) {
