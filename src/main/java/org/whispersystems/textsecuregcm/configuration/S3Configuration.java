@@ -33,6 +33,9 @@ public class S3Configuration {
   @JsonProperty
   private String attachmentsBucket;
 
+  @JsonProperty
+  private String region;
+
   public String getAccessKey() {
     return accessKey;
   }
@@ -43,5 +46,9 @@ public class S3Configuration {
 
   public String getAttachmentsBucket() {
     return attachmentsBucket;
+  }
+
+  public String getRegion() {
+    return region == null ? "us-west-2" : region;
   }
 }
