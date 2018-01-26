@@ -92,7 +92,7 @@ public class APNSender implements Managed {
         } else if (result.getStatus() == ApnResult.Status.NO_SUCH_USER) {
           handleUnregisteredUser(message.getApnId(), message.getNumber(), message.getDeviceId());
         } else if (result.getStatus() == ApnResult.Status.GENERIC_FAILURE) {
-          logger.warn("*** Got APN generic failure: " + result.getReason() + ", " + message.getNumber());
+          logger.info("*** Got APN generic failure: " + result.getReason() + ", " + message.getNumber());
         }
       }
 
@@ -162,7 +162,6 @@ public class APNSender implements Managed {
     logger.info("APN Unregister timestamp matches: " + device.get().getApnId() + ", " + device.get().getVoipApnId());
 //    device.get().setApnId(null);
 //    device.get().setVoipApnId(null);
-//    device.get().setFetchesMessages(false);
 //    accountsManager.update(account.get());
 
 //    if (fallbackManager != null) {

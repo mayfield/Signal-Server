@@ -105,14 +105,13 @@ public class GCMSender implements Managed {
 
   private void handleBadRegistration(Result result) {
     GcmMessage message = (GcmMessage)result.getContext();
-    logger.warn("Got GCM unregistered notice! " + message.getGcmId());
+    logger.info("Got GCM unregistered notice: " + message.getNumber() + "." + message.getDeviceId());
 
     Optional<Account> account = getAccountForEvent(message);
 
     if (account.isPresent()) {
       Device device = account.get().getDevice(message.getDeviceId()).get();
       device.setGcmId(null);
-      device.setFetchesMessages(false);
 
       accountsManager.update(account.get());
     }

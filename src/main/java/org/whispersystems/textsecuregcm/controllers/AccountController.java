@@ -153,6 +153,7 @@ public class AccountController {
   public void deleteApnRegistrationId(@Auth Account account) {
     Device device = account.getAuthenticatedDevice().get();
     device.setApnId(null);
+    device.setVoipApnId(null);
     accounts.update(account);
   }
 
