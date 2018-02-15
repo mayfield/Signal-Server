@@ -18,6 +18,7 @@ package org.whispersystems.textsecuregcm.controllers;
 
 import com.codahale.metrics.annotation.Timed;
 import com.google.common.base.Optional;
+import org.skife.jdbi.v2.exceptions.TransactionException;
 import org.skife.jdbi.v2.exceptions.UnableToExecuteStatementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +105,19 @@ public class KeysController {
       accounts.update(account);
     }
 
-    keys.store(account.getNumber(), device.getId(), preKeys.getPreKeys());
+    int retries = 0;
+    while (true) {
+      try {
+        keys.store(account.getNumber(), device.getId(), preKeys.getPreKeys());
+        return;
+      } catch (TransactionException e) {
+        if (retries++ < 20) {
+          logger.warn("DB Problem: " + e.getMessage());
+        } else {
+          throw e;
+        }
+      }
+    }
   }
 
   @Timed
@@ -184,19 +197,23 @@ public class KeysController {
   {
     try {
       if (deviceIdSelector.equals("*")) {
-        return keys.get(destination.getNumber());
-      }
-
-      long deviceId = Long.parseLong(deviceIdSelector);
-
-      for (int i=0;i<20;i++) {
-        try {
-          return keys.get(destination.getNumber(), deviceId);
-        } catch (UnableToExecuteStatementException e) {
-          logger.info(e.getMessage());
+        for (int i = 0; i < 20; i++) {
+          try {
+            return keys.get(destination.getNumber());
+          } catch (UnableToExecuteStatementException | TransactionException e) {
+            logger.warn("DB problem: " + e.getMessage());
+          }
+        }
+      } else {
+        long deviceId = Long.parseLong(deviceIdSelector);
+        for (int i = 0; i < 20; i++) {
+          try {
+            return keys.get(destination.getNumber(), deviceId);
+          } catch (UnableToExecuteStatementException | TransactionException e) {
+            logger.warn("DB problem: " + e.getMessage());
+          }
         }
       }
-
       throw new WebApplicationException(Response.status(500).build());
     } catch (NumberFormatException e) {
       throw new WebApplicationException(Response.status(422).build());
