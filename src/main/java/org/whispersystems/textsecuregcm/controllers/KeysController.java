@@ -201,7 +201,8 @@ public class KeysController {
           try {
             return keys.get(destination.getNumber());
           } catch (UnableToExecuteStatementException | TransactionException e) {
-            logger.warn("DB problem: " + e.getMessage());
+            logger.info(e.getMessage());
+            logger.warn("DB stubmbled: retrying...");
           }
         }
       } else {
@@ -210,7 +211,8 @@ public class KeysController {
           try {
             return keys.get(destination.getNumber(), deviceId);
           } catch (UnableToExecuteStatementException | TransactionException e) {
-            logger.warn("DB problem: " + e.getMessage());
+            logger.info(e.getMessage());
+            logger.warn("DB stumbled: retrying...");
           }
         }
       }
