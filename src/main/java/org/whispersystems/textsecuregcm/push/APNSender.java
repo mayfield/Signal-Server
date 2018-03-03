@@ -92,7 +92,7 @@ public class APNSender implements Managed {
         } else if (result.getStatus() == ApnResult.Status.NO_SUCH_USER) {
           handleUnregisteredUser(message.getApnId(), message.getNumber(), message.getDeviceId());
         } else if (result.getStatus() == ApnResult.Status.GENERIC_FAILURE) {
-          logger.info("*** Got APN generic failure: " + result.getReason() + ", " + message.getNumber());
+          logger.warn("*** Got APN generic failure: " + result.getReason() + ", " + message.getNumber());
         }
       }
 

@@ -34,7 +34,7 @@ ARGS := \
 		$(call ifset,$(APN_BUNDLEID),-Ddw.apn.bundleId) \
 		$(if $(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].name=CCSM) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].type=raven) \
-		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].threshold=WARN) \
+		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].threshold=ERROR) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].dsn=$(SENTRY_DSN)) \
 		-Ddw.database.url=jdbc:postgresql://$(call get_db_host,$(ACCOUNT_DATABASE_URL)) \
 		-Ddw.database.user=$(call get_db_username,$(ACCOUNT_DATABASE_URL)) \
