@@ -43,7 +43,7 @@ public class IncomingMessage {
   private String relay;
 
   @JsonProperty
-  private long   timestamp; // deprecated
+  private long   timestamp;
 
   @JsonProperty
   private boolean silent = false;
@@ -79,5 +79,9 @@ public class IncomingMessage {
 
   public boolean isSilent() {
     return silent;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
   }
 }

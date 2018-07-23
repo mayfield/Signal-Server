@@ -129,6 +129,46 @@ public class MessageController {
   }
 
   @Timed
+  @Path("/{destination}/{deviceId}")
+  @PUT
+  @Consumes(MediaType.APPLICATION_JSON)
+  @Produces(MediaType.APPLICATION_JSON)
+  public SendMessageResponse sendMessage(@Auth                     Account source,
+                                         @PathParam("destination") String destinationName,
+                                         @PathParam("deviceId")    Long deviceId,
+                                         @Valid                    IncomingMessage message)
+      throws IOException, RateLimitExceededException
+  {
+    rateLimiters.getMessagesLimiter().validate(source.getNumber() + "__" + destinationName);
+    if (message.getDestinationDeviceId() != deviceId) {
+      logger.error("Destination deviceId mismatched with message payload");
+      throw new WebApplicationException(Response.status(400).build());
+    }
+    if (message.getTimestamp() == 0) {
+      logger.error("Timestamp required in message payload");
+      throw new WebApplicationException(Response.status(400).build());
+    }
+    Account destination;
+    try {
+      destination = getDestinationAccount(destinationName);
+    } catch (NoSuchUserException e) {
+      throw new WebApplicationException(Response.status(404).build());
+    }
+    Optional<Device> device = destination.getDevice(deviceId);
+    if (device.isPresent()) {
+      if (message.getDestinationRegistrationId() > 0 &&
+          message.getDestinationRegistrationId() != device.get().getRegistrationId()) {
+        throw new WebApplicationException(Response.status(410).build());
+      }
+      if (sendLocalMessage(source, destination, device.get(), message.getTimestamp(), message)) {
+        boolean isSyncMessage = source.getNumber().equals(destinationName);
+        return new SendMessageResponse(!isSyncMessage && source.getActiveDeviceCount() > 1);
+      }
+    }
+    throw new WebApplicationException(Response.status(404).build());
+  }
+
+  @Timed
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public OutgoingMessageEntityList getPendingMessages(@Auth Account account) {
