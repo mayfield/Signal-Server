@@ -2,7 +2,6 @@ default: build
 
 ACCOUNT_DATABASE_URL ?= postgres://postgres:NOPE@localhost:5432/account
 MESSAGE_DATABASE_URL ?= postgres://postgres:NOPE@localhost:5432/message
-STACK_ENV ?= prototype
 
 VERSION := 1.49
 TARGET := target/TextSecureServer-$(VERSION).jar
@@ -36,6 +35,7 @@ ARGS := \
 		$(if $(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].name=CCSM) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].type=sentry) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].threshold=ERROR) \
+		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].dsn=$(SENTRY_DSN)) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].environment=$(STACK_ENV)) \
 		-Ddw.database.url=jdbc:postgresql://$(call get_db_host,$(ACCOUNT_DATABASE_URL)) \
 		-Ddw.database.user=$(call get_db_username,$(ACCOUNT_DATABASE_URL)) \
