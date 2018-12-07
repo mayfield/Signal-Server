@@ -59,3 +59,9 @@ dbmigrate:
 
 run: dbmigrate
 	$(RUN) server $(CONFIG)
+
+docker-build:
+	docker build -t textsecure-server .
+
+docker-run:
+	docker run -it -p 8080:8080 textsecure-server
