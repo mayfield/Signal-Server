@@ -1,6 +1,6 @@
-TextSecure-Server
+Signal-Server
 =================
-Forsta fork of WhisperSystems' TextSecure-Server
+Signal E2E message server.
 
 
 Building
@@ -23,15 +23,17 @@ Configuration is achieved via setting env vars.
 
 ### Required
 
+    APN_CERT
+    APN_KEY
+    APN_BUNDLEID
+
+    GCM_APIKEY
+    GCM_SENDERID
+
     ACCOUNT_DATABASE_URL
     MESSAGE_DATABASE_URL
 
     REDIS_URL
-
-    PUSHSERVER_HOST
-    PUSHSERVER_PORT
-    PUSHSERVER_USERNAME
-    PUSHSERVER_PASSWORD
 
     S3_ACCESSKEY
     S3_ACCESSSECRET
@@ -44,8 +46,9 @@ Configuration is achieved via setting env vars.
     CCSM_PARTNER_TOKEN
 
 
----------------------
-
-Copyright 2013 Open Whisper Systems
-
+License
+--------
 Licensed under the AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
+
+* Copyright 2013 Open Whisper Systems
+* Copyright 2017-2018 Forsta Inc.
