@@ -1,0 +1,24 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: signal-db
+spec:
+  selector:
+    app: signal-db
+  ports:
+  - protocol: TCP
+    port: 5432
+    targetPort: 5432
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: signal-redis
+spec:
+  selector:
+    app: signal-redis
+  ports:
+  - protocol: TCP
+    port: 6379
+    targetPort: 6379
+

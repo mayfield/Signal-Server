@@ -1,0 +1,76 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: signal-app
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: signal-app
+    spec:
+      containers:
+        - name: signal-server
+          image: forstalabs/signal-server:latest
+          ports:
+            - containerPort: 8180
+          envFrom:
+            - configMapRef:
+                name: signal-app-config
+          env:
+            - name: ACCOUNT_DATABASE_URL
+              value: postgres://postgres:@signal-db/account
+            - name: MESSAGE_DATABASE_URL
+              value: postgres://postgres:@signal-db/message
+            - name: REDIS_URL
+              value: redis://signal-redis:6379
+            - name: APN_BUNDLEID
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: APN_BUNDLEID
+            - name: APN_CERT
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: APN_CERT
+            - name: APN_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: APN_KEY
+            - name: CCSM_PARTNER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: CCSM_PARTNER_TOKEN
+            - name: GCM_APIKEY
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: GCM_APIKEY
+            - name: GCM_SENDERID
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: GCM_SENDERID
+            - name: S3_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: S3_ACCESSKEY
+            - name: S3_ACCESSSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: S3_ACCESSSECRET
+            - name: S3_ATTACHMENTSBUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: S3_ATTACHMENTSBUCKET
+            - name: SENTRY_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: SENTRY_DSN
