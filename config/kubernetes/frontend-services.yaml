@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: signal-app
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+spec:
+  type: LoadBalancer
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8180
+  selector:
+    app: signal-app

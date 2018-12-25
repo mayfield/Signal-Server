@@ -14,9 +14,6 @@ spec:
           image: postgres:10
           ports:
             - containerPort: 5432
-          envFrom:
-            - configMapRef:
-                name: signal-db-config
           volumeMounts:
             - mountPath: /var/lib/postgresql
               name: db
