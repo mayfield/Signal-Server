@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: signal-app
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -13,7 +13,8 @@ spec:
         - name: signal-server
           image: forstalabs/signal-server:latest
           ports:
-            - containerPort: 8180
+            - name: http
+              containerPort: 8180
           envFrom:
             - configMapRef:
                 name: signal-app-config
@@ -90,7 +91,8 @@ spec:
         - name: postgres
           image: postgres:10
           ports:
-            - containerPort: 5432
+            - name: postgres
+              containerPort: 5432
           volumeMounts:
             - mountPath: /var/lib/postgresql
               name: db
@@ -114,4 +116,5 @@ spec:
         - name: redis
           image: redis:latest
           ports:
-            - containerPort: 6379
+            - name: redis
+              containerPort: 6379
