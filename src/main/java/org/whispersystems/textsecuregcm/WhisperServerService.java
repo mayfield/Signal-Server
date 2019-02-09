@@ -25,6 +25,8 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.skife.jdbi.v2.DBI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.whispersystems.dispatch.DispatchChannel;
 import org.whispersystems.dispatch.DispatchManager;
 import org.whispersystems.dropwizard.simpleauth.AuthDynamicFeature;
@@ -113,6 +115,8 @@ import io.prometheus.client.hotspot.DefaultExports;
 import redis.clients.jedis.JedisPool;
 
 public class WhisperServerService extends Application<WhisperServerConfiguration> {
+
+  private final Logger logger = LoggerFactory.getLogger(WhisperServerService.class);
 
   static {
     Security.addProvider(new BouncyCastleProvider());
@@ -223,10 +227,11 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     environment.jersey().register(keysController);
     environment.jersey().register(messageController);
     PromMetricsConfiguration promMetricsConfig = config.getPromMetricsConfiguration();
-    if (promMetricsConfig.enabled == true) {
+    if (promMetricsConfig != null && promMetricsConfig.enabled == true) {
+        logger.info("Enabling Prometheous Metrics");
         CollectorRegistry.defaultRegistry.register(new DropwizardExports(environment.metrics()));
         DefaultExports.initialize();
-        environment.servlets().addServlet("PromMetrics", new MetricsServlet());
+        environment.servlets().addServlet("foo", new MetricsServlet()).addMapping("/metrics");
     }
 
     WebSocketEnvironment webSocketEnvironment = new WebSocketEnvironment(environment, config.getWebSocketConfiguration(), 90000);
@@ -242,7 +247,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     WebSocketResourceProviderFactory webSocketServlet    = new WebSocketResourceProviderFactory(webSocketEnvironment);
     WebSocketResourceProviderFactory provisioningServlet = new WebSocketResourceProviderFactory(provisioningEnvironment);
 
-    ServletRegistration.Dynamic websocket    = environment.servlets().addServlet("WebSocket", webSocketServlet      );
+    ServletRegistration.Dynamic websocket    = environment.servlets().addServlet("WebSocket", webSocketServlet);
     ServletRegistration.Dynamic provisioning = environment.servlets().addServlet("Provisioning", provisioningServlet);
 
     websocket.addMapping("/v1/websocket/");

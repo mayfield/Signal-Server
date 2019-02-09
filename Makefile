@@ -33,6 +33,7 @@ ARGS := \
 		$(call ifset,$(APN_KEY),-Ddw.apn.pushKey) \
 		$(call ifset,$(APN_BUNDLEID),-Ddw.apn.bundleId) \
 		$(if $(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].name=CCSM) \
+		$(if $(PROM_METRICS),-Ddw.promMetrics.enabled=true) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].type=sentry) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].threshold=ERROR) \
 		$(if $(SENTRY_DSN),-Ddw.logging.appenders[0].dsn=$(SENTRY_DSN)) \
