@@ -1,0 +1,47 @@
+kind: pipeline
+name: default
+clone:
+  depth: 1
+trigger:
+  branch:
+  - master
+  event:
+  - push
+steps:
+- name: build-master
+  image: plugins/ecr
+  privileged: true
+  settings:
+    repo: 577012953595.dkr.ecr.us-west-2.amazonaws.com/signal-server
+    registry: 577012953595.dkr.ecr.us-west-2.amazonaws.com
+    region: us-west-2
+    tags: commit-${DRONE_COMMIT},dev-build-${DRONE_BUILD_NUMBER}
+    build_args:
+    - source_version=${DRONE_COMMIT}
+  volumes:
+   - name: docker
+     path: /var/run/docker.sock
+- name: deploy
+  image: quay.io/honestbee/drone-kubernetes
+  settings:
+    kubernetes_server: https://172.20.0.1
+    kubernetes_token:
+      from_secret: drone-deploy-token
+    kubernetes_cert:
+      from_secret: drone-deploy-cert
+    deployment: signal-app
+    repo: 577012953595.dkr.ecr.us-west-2.amazonaws.com/signal-server
+    container: [signal-server]
+    tag: commit-${DRONE_COMMIT}
+- name: notify
+  image: plugins/webhook
+  settings:
+    urls: http://172.20.207.235/drone
+  when:
+    status:
+    - success
+    - failure
+volumes:
+- name: docker
+  host:
+    path: /var/run/docker.sock
