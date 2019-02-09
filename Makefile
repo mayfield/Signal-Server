@@ -27,7 +27,6 @@ ARGS := \
 		$(call ifset,$(PORT),-Ddw.server.applicationConnectors[0].port) \
 		$(call ifset,$(ADMIN_PORT),-Ddw.server.adminConnectors[0].port) \
 		$(call ifset,$(CCSM_PARTNER_TOKEN),-Ddw.trusted.partners[0].token) \
-		$(call ifset,$(GCM_SENDERID),-Ddw.gcm.senderId) \
 		$(call ifset,$(GCM_APIKEY),-Ddw.gcm.apiKey) \
 		$(call ifset,$(APN_CERT),-Ddw.apn.pushCertificate) \
 		$(call ifset,$(APN_KEY),-Ddw.apn.pushKey) \
