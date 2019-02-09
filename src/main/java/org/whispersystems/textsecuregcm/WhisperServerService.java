@@ -231,7 +231,7 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
         logger.info("Enabling Prometheous Metrics");
         CollectorRegistry.defaultRegistry.register(new DropwizardExports(environment.metrics()));
         DefaultExports.initialize();
-        environment.servlets().addServlet("foo", new MetricsServlet()).addMapping("/metrics");
+        environment.servlets().addServlet("PromMetrics", new MetricsServlet()).addMapping("/metrics");
     }
 
     WebSocketEnvironment webSocketEnvironment = new WebSocketEnvironment(environment, config.getWebSocketConfiguration(), 90000);
