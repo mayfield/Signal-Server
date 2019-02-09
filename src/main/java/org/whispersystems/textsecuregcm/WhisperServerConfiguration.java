@@ -20,9 +20,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.whispersystems.textsecuregcm.configuration.ApnConfiguration;
 import org.whispersystems.textsecuregcm.configuration.FederationConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GcmConfiguration;
-import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GraphiteConfiguration;
 import org.whispersystems.textsecuregcm.configuration.MaxDeviceConfiguration;
+import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
+import org.whispersystems.textsecuregcm.configuration.PromMetricsConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PushConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RateLimitsConfiguration;
 import org.whispersystems.textsecuregcm.configuration.RedisConfiguration;
@@ -87,6 +88,10 @@ public class WhisperServerConfiguration extends Configuration {
   private PartnerConfiguration trusted = new PartnerConfiguration();
 
   @Valid
+  @JsonProperty
+  private PromMetricsConfiguration promMetrics = new PromMetricsConfiguration();
+
+  @Valid
   @NotNull
   @JsonProperty
   private DataSourceFactory database = new DataSourceFactory();
@@ -109,12 +114,10 @@ public class WhisperServerConfiguration extends Configuration {
   private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
 
   @Valid
-  @NotNull
   @JsonProperty
   private GcmConfiguration gcm;
 
   @Valid
-  @NotNull
   @JsonProperty
   private ApnConfiguration apn;
 
@@ -164,6 +167,10 @@ public class WhisperServerConfiguration extends Configuration {
 
   public PartnerConfiguration getPartnerConfiguration() {
     return trusted;
+  }
+
+  public PromMetricsConfiguration getPromMetricsConfiguration() {
+    return promMetrics;
   }
 
   public GcmConfiguration getGcmConfiguration() {

@@ -13,14 +13,6 @@ trusted:
 push:
     queueSize: 200
 
-gcm:
-    apiKey: MUST_BE_SET
-
-apn:
-    bundleId: MUST_BE_SET
-    pushCertificate: MUST_BE_SET
-    pushKey: MUST_BE_SET
- 
 s3:
     accessKey: MUST_SET_S3_ACCESSKEY
     accessSecret: MUST_SET_S3_ACCESSSECRET

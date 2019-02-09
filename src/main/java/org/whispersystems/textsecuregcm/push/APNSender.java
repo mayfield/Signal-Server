@@ -54,6 +54,17 @@ public class APNSender implements Managed {
   public APNSender(AccountsManager accountsManager, ApnConfiguration configuration)
       throws IOException
   {
+    if (configuration == null ||
+        configuration.getBundleId() == null ||
+        configuration.getPushKey() == null ||
+        configuration.getPushCertificate() == null) {
+        logger.warn("Apple Push Notifications (APN) Unconfigured - iOS wakeup will not work");
+        this.accountsManager = null;
+        this.bundleId = null;
+        this.sandbox = false;
+        this.apnsClient = null;
+        return;
+    }
     this.accountsManager = accountsManager;
     this.bundleId        = configuration.getBundleId();
     this.sandbox         = configuration.isSandboxEnabled();
@@ -74,6 +85,9 @@ public class APNSender implements Managed {
   public ListenableFuture<ApnResult> sendMessage(final ApnMessage message)
       throws TransientPushFailureException
   {
+    if (this.apnsClient == null) {
+        return null;
+    }
     String topic = bundleId;
 
     if (message.isVoip()) {
@@ -107,12 +121,18 @@ public class APNSender implements Managed {
 
   @Override
   public void start() throws Exception {
+    if (this.apnsClient == null) {
+        return;
+    }
     this.executor = Executors.newSingleThreadExecutor();
     this.apnsClient.connect(sandbox);
   }
 
   @Override
   public void stop() throws Exception {
+    if (this.apnsClient == null) {
+        return;
+    }
     this.executor.shutdown();
     this.apnsClient.disconnect();
   }

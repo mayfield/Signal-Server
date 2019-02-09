@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.whispersystems.gcm.server.Message;
 import org.whispersystems.gcm.server.Result;
 import org.whispersystems.gcm.server.Sender;
+import org.whispersystems.textsecuregcm.configuration.GcmConfiguration;
 import org.whispersystems.textsecuregcm.storage.Account;
 import org.whispersystems.textsecuregcm.storage.AccountsManager;
 import org.whispersystems.textsecuregcm.storage.Device;
@@ -48,9 +49,16 @@ public class GCMSender implements Managed {
   private final Sender            signalSender;
   private       ExecutorService   executor;
 
-  public GCMSender(AccountsManager accountsManager, String signalKey) {
+  public GCMSender(AccountsManager accountsManager, GcmConfiguration configuration) {
+    if (configuration == null ||
+        configuration.getApiKey() == null) {
+        logger.warn("Google Cloud Messaging (GCM) Unconfigured - Android and Web wakeup will not work");
+        this.accountsManager = null;
+        this.signalSender = null;
+        return;
+    }
     this.accountsManager = accountsManager;
-    this.signalSender    = new Sender(signalKey, 50);
+    this.signalSender    = new Sender(configuration.getApiKey(), 50);
   }
 
   @VisibleForTesting
@@ -61,6 +69,9 @@ public class GCMSender implements Managed {
   }
 
   public void sendMessage(GcmMessage message) {
+    if (this.signalSender == null) {
+        return;
+    }
     Message.Builder builder = Message.newBuilder()
                                      .withDestination(message.getGcmId())
                                      .withPriority("high");
@@ -94,11 +105,17 @@ public class GCMSender implements Managed {
 
   @Override
   public void start() {
+    if (this.signalSender == null) {
+        return;
+    }
     executor = Executors.newSingleThreadExecutor();
   }
 
   @Override
   public void stop() throws IOException {
+    if (this.signalSender == null) {
+        return;
+    }
     this.signalSender.stop();
     this.executor.shutdown();
   }
