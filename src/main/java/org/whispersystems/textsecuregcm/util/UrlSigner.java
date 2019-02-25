@@ -47,27 +47,23 @@ public class UrlSigner {
     this.bucket      = config.getAttachmentsBucket();
 
     AWSCredentialsProvider credentialsProvider = new AWSStaticCredentialsProvider(credentials);
-    if(config.getEndpoint() != null) {
-        //https://docs.minio.io/docs/how-to-use-aws-sdk-for-java-with-minio-server.html
-        ClientConfiguration clientConfiguration = new ClientConfiguration();
-        clientConfiguration.setSignerOverride("AWSS3V4SignerType");
-        this.s3client    = AmazonS3ClientBuilder
-                              .standard()
-                              .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(config.getEndpoint(), config.getRegion()))
-                              .withPathStyleAccessEnabled(true)
-                              .withClientConfiguration(clientConfiguration)
-                              .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                              .build();
+    if (config.getEndpoint() != null) {
+      // https://docs.minio.io/docs/how-to-use-aws-sdk-for-java-with-minio-server.html
+      ClientConfiguration clientConfiguration = new ClientConfiguration();
+      clientConfiguration.setSignerOverride("AWSS3V4SignerType");
+      this.s3client = AmazonS3ClientBuilder.standard()
+                                           .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(config.getEndpoint(),
+                                                                                                                 config.getRegion()))
+                                           .withPathStyleAccessEnabled(true)
+                                           .withClientConfiguration(clientConfiguration)
+                                           .withCredentials(new AWSStaticCredentialsProvider(credentials))
+                                           .build();
     } else {
-        this.s3client    = AmazonS3Client.builder()
-                              .withCredentials(credentialsProvider)
-                              .withRegion(config.getRegion())
-                              .enableAccelerateMode()
-                              .build();
+        this.s3client = AmazonS3Client.builder().withCredentials(credentialsProvider)
+                                                .withRegion(config.getRegion())
+                                                .enableAccelerateMode()
+                                                .build();
     }
-
-    
-
   }
 
   public URL getPreSignedUrl(long attachmentId, HttpMethod method) {
@@ -78,5 +74,4 @@ public class UrlSigner {
 
     return s3client.generatePresignedUrl(request);
   }
-
 }
