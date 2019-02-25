@@ -22,6 +22,7 @@ ARGS := \
 		$(call ifset,$(S3_ACCESSKEY),-Ddw.s3.accessKey) \
 		$(call ifset,$(S3_ACCESSSECRET),-Ddw.s3.accessSecret) \
 		$(call ifset,$(S3_ATTACHMENTSBUCKET),-Ddw.s3.attachmentsBucket) \
+		$(call ifset,$(S3_ENDPOINT),-Ddw.s3.endpoint) \
 		$(call ifset,$(REDIS_DIR_URL),-Ddw.directory.url) \
 		$(call ifset,$(REDIS_CACHE_URL),-Ddw.cache.url) \
 		$(call ifset,$(PORT),-Ddw.server.applicationConnectors[0].port) \
