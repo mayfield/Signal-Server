@@ -27,6 +27,9 @@
     },
     "S3_ATTACHMENTSBUCKET": {
       "required": true
+    },
+    "S3_ENDPOINT": {
+      "required": false
     }
   },
   "addons": [{
