@@ -37,9 +37,10 @@ public abstract class Messages {
   private static final String DESTINATION_DEVICE = "destination_device";
   private static final String MESSAGE            = "message";
   private static final String CONTENT            = "content";
+  private static final String ADDED              = "added";
 
-  @SqlQuery("INSERT INTO messages (" + TYPE + ", " + RELAY + ", " + TIMESTAMP + ", " + SOURCE + ", " + SOURCE_DEVICE + ", " + DESTINATION + ", " + DESTINATION_DEVICE + ", " + MESSAGE + ", " + CONTENT + ") " +
-            "VALUES (:type, :relay, :timestamp, :source, :source_device, :destination, :destination_device, :message, :content) " +
+  @SqlQuery("INSERT INTO messages (" + TYPE + ", " + RELAY + ", " + TIMESTAMP + ", " + SOURCE + ", " + SOURCE_DEVICE + ", " + DESTINATION + ", " + DESTINATION_DEVICE + ", " + MESSAGE + ", " + CONTENT + ", " + ADDED + ") " +
+            "VALUES (:type, :relay, :timestamp, :source, :source_device, :destination, :destination_device, :message, :content, :added) " +
             "RETURNING (SELECT COUNT(id) FROM messages WHERE " + DESTINATION + " = :destination AND " + DESTINATION_DEVICE + " = :destination_device AND " + TYPE + " != " + Envelope.Type.RECEIPT_VALUE + ")")
   abstract int store(@MessageBinder Envelope message,
                      @Bind("destination") String destination,
@@ -106,7 +107,8 @@ public abstract class Messages {
                                        resultSet.getString(SOURCE),
                                        resultSet.getInt(SOURCE_DEVICE),
                                        legacyMessage,
-                                       resultSet.getBytes(CONTENT));
+                                       resultSet.getBytes(CONTENT),
+                                       resultSet.getLong(ADDED));
     }
   }
 
@@ -130,6 +132,7 @@ public abstract class Messages {
             sql.bind(SOURCE_DEVICE, message.getSourceDevice());
             sql.bind(MESSAGE, message.hasLegacyMessage() ? message.getLegacyMessage().toByteArray() : null);
             sql.bind(CONTENT, message.hasContent() ? message.getContent().toByteArray() : null);
+            sql.bind(ADDED, System.currentTimeMillis());
           }
         };
       }

@@ -29,11 +29,14 @@ public class OutgoingMessageEntity {
   @JsonProperty
   private byte[] content;
 
+  @JsonProperty
+  private long added;
+
   public OutgoingMessageEntity() {}
 
   public OutgoingMessageEntity(long id, int type, String relay, long timestamp,
                                String source, int sourceDevice, byte[] message,
-                               byte[] content)
+                               byte[] content, long added)
   {
     this.id           = id;
     this.type         = type;
@@ -43,6 +46,7 @@ public class OutgoingMessageEntity {
     this.sourceDevice = sourceDevice;
     this.message      = message;
     this.content      = content;
+    this.added        = added;
   }
 
   public int getType() {
@@ -71,6 +75,10 @@ public class OutgoingMessageEntity {
 
   public byte[] getContent() {
     return content;
+  }
+
+  public long getAdded() {
+    return added;
   }
 
   public long getId() {

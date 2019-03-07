@@ -196,6 +196,14 @@ public class WebSocketConnection implements DispatchChannel {
         builder.setRelay(message.getRelay());
       }
 
+      if (message.getAdded() != 0) {
+        logger.info("Dequeuing message added at: %d", message.getAdded());
+        builder.setAge(System.currentTimeMillis() - message.getAdded());
+      } else {
+        logger.warn("Dequeuing old message without added timestamp");
+        builder.setAge(System.currentTimeMillis() - message.getTimestamp());
+      }
+
       sendMessage(builder.build(), Optional.of(message.getId()), !iterator.hasNext() && messages.hasMore());
     }
 
