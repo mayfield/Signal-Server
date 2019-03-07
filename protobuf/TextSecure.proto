@@ -14,6 +14,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+syntax = "proto2";
+
 package textsecure;
 
 option java_package = "org.whispersystems.textsecuregcm.entities";
@@ -35,6 +38,7 @@ message Envelope {
   optional uint64 timestamp     = 5;
   optional bytes  legacyMessage = 6; // Contains an encrypted DataMessage XXX -- Remove after 10/01/15
   optional bytes  content       = 8; // Contains an encrypted Content
+  optional uint64 age           = 9;
 }
 
 message ProvisioningUuid {
