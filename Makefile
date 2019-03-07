@@ -52,6 +52,9 @@ RUN := $(JAVA) $(ARGS) -jar $(TARGET)
 build:
 	mvn install -DskipTests
 
+clean:
+	mvn clean
+
 test:
 	mvn test
 
