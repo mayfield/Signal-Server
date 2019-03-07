@@ -197,7 +197,6 @@ public class WebSocketConnection implements DispatchChannel {
       }
 
       if (message.getAdded() != 0) {
-        logger.info("Dequeuing message added at: %d", message.getAdded());
         builder.setAge(System.currentTimeMillis() - message.getAdded());
       } else {
         logger.warn("Dequeuing old message without added timestamp");
