@@ -94,6 +94,8 @@ public abstract class Messages {
 
       int    type          = resultSet.getInt(TYPE);
       byte[] legacyMessage = resultSet.getBytes(MESSAGE);
+      long   added         = resultSet.getLong(ADDED);
+      long   age           = added != 0 ? System.currentTimeMillis() - added : 0;
 
       if (type == Envelope.Type.RECEIPT_VALUE && legacyMessage == null) {
         /// XXX - REMOVE AFTER 10/01/15
@@ -108,7 +110,7 @@ public abstract class Messages {
                                        resultSet.getInt(SOURCE_DEVICE),
                                        legacyMessage,
                                        resultSet.getBytes(CONTENT),
-                                       resultSet.getLong(ADDED));
+                                       age);
     }
   }
 

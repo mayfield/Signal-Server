@@ -182,7 +182,8 @@ public class WebSocketConnection implements DispatchChannel {
                                               .setType(Envelope.Type.valueOf(message.getType()))
                                               .setSourceDevice(message.getSourceDevice())
                                               .setSource(message.getSource())
-                                              .setTimestamp(message.getTimestamp());
+                                              .setTimestamp(message.getTimestamp())
+                                              .setAge(message.getAge());
 
       if (message.getMessage() != null) {
         builder.setLegacyMessage(ByteString.copyFrom(message.getMessage()));
@@ -194,13 +195,6 @@ public class WebSocketConnection implements DispatchChannel {
 
       if (message.getRelay() != null && !message.getRelay().isEmpty()) {
         builder.setRelay(message.getRelay());
-      }
-
-      if (message.getAdded() != 0) {
-        builder.setAge(System.currentTimeMillis() - message.getAdded());
-      } else {
-        logger.warn("Dequeuing old message without added timestamp");
-        builder.setAge(System.currentTimeMillis() - message.getTimestamp());
       }
 
       sendMessage(builder.build(), Optional.of(message.getId()), !iterator.hasNext() && messages.hasMore());
