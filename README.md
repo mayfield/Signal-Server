@@ -51,4 +51,4 @@ License
 Licensed under the AGPLv3: https://www.gnu.org/licenses/agpl-3.0.html
 
 * Copyright 2013 Open Whisper Systems
-* Copyright 2017-2018 Forsta Inc.
+* Copyright 2017-2019 Forsta Inc.
