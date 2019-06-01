@@ -108,13 +108,38 @@ public final class MessageProtos {
     com.google.protobuf.ByteString getContent();
 
     /**
+     * <pre>
+     * How long the message was stored on the server.
+     * </pre>
+     *
      * <code>optional uint64 age = 9;</code>
      */
     boolean hasAge();
     /**
+     * <pre>
+     * How long the message was stored on the server.
+     * </pre>
+     *
      * <code>optional uint64 age = 9;</code>
      */
     long getAge();
+
+    /**
+     * <pre>
+     * Server added timestamp of when message came in.
+     * </pre>
+     *
+     * <code>optional uint64 received = 10;</code>
+     */
+    boolean hasReceived();
+    /**
+     * <pre>
+     * Server added timestamp of when message came in.
+     * </pre>
+     *
+     * <code>optional uint64 received = 10;</code>
+     */
+    long getReceived();
   }
   /**
    * Protobuf type {@code textsecure.Envelope}
@@ -137,6 +162,7 @@ public final class MessageProtos {
       legacyMessage_ = com.google.protobuf.ByteString.EMPTY;
       content_ = com.google.protobuf.ByteString.EMPTY;
       age_ = 0L;
+      received_ = 0L;
     }
 
     @java.lang.Override
@@ -163,15 +189,9 @@ public final class MessageProtos {
             case 0:
               done = true;
               break;
-            default: {
-              if (!parseUnknownField(
-                  input, unknownFields, extensionRegistry, tag)) {
-                done = true;
-              }
-              break;
-            }
             case 8: {
               int rawValue = input.readEnum();
+                @SuppressWarnings("deprecation")
               org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type value = org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type.valueOf(rawValue);
               if (value == null) {
                 unknownFields.mergeVarintField(1, rawValue);
@@ -218,6 +238,18 @@ public final class MessageProtos {
               age_ = input.readUInt64();
               break;
             }
+            case 80: {
+              bitField0_ |= 0x00000100;
+              received_ = input.readUInt64();
+              break;
+            }
+            default: {
+              if (!parseUnknownField(
+                  input, unknownFields, extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -235,6 +267,7 @@ public final class MessageProtos {
       return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_Envelope_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_Envelope_fieldAccessorTable
@@ -372,6 +405,7 @@ public final class MessageProtos {
      * <code>optional .textsecure.Envelope.Type type = 1;</code>
      */
     public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type getType() {
+      @SuppressWarnings("deprecation")
       org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type result = org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type.valueOf(type_);
       return result == null ? org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type.UNKNOWN : result;
     }
@@ -539,19 +573,51 @@ public final class MessageProtos {
     public static final int AGE_FIELD_NUMBER = 9;
     private long age_;
     /**
+     * <pre>
+     * How long the message was stored on the server.
+     * </pre>
+     *
      * <code>optional uint64 age = 9;</code>
      */
     public boolean hasAge() {
       return ((bitField0_ & 0x00000080) == 0x00000080);
     }
     /**
+     * <pre>
+     * How long the message was stored on the server.
+     * </pre>
+     *
      * <code>optional uint64 age = 9;</code>
      */
     public long getAge() {
       return age_;
     }
 
+    public static final int RECEIVED_FIELD_NUMBER = 10;
+    private long received_;
+    /**
+     * <pre>
+     * Server added timestamp of when message came in.
+     * </pre>
+     *
+     * <code>optional uint64 received = 10;</code>
+     */
+    public boolean hasReceived() {
+      return ((bitField0_ & 0x00000100) == 0x00000100);
+    }
+    /**
+     * <pre>
+     * Server added timestamp of when message came in.
+     * </pre>
+     *
+     * <code>optional uint64 received = 10;</code>
+     */
+    public long getReceived() {
+      return received_;
+    }
+
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -561,6 +627,7 @@ public final class MessageProtos {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -587,9 +654,13 @@ public final class MessageProtos {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         output.writeUInt64(9, age_);
       }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        output.writeUInt64(10, received_);
+      }
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -624,6 +695,10 @@ public final class MessageProtos {
       if (((bitField0_ & 0x00000080) == 0x00000080)) {
         size += com.google.protobuf.CodedOutputStream
           .computeUInt64Size(9, age_);
+      }
+      if (((bitField0_ & 0x00000100) == 0x00000100)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeUInt64Size(10, received_);
       }
       size += unknownFields.getSerializedSize();
       memoizedSize = size;
@@ -680,6 +755,11 @@ public final class MessageProtos {
         result = result && (getAge()
             == other.getAge());
       }
+      result = result && (hasReceived() == other.hasReceived());
+      if (hasReceived()) {
+        result = result && (getReceived()
+            == other.getReceived());
+      }
       result = result && unknownFields.equals(other.unknownFields);
       return result;
     }
@@ -724,6 +804,11 @@ public final class MessageProtos {
         hash = (37 * hash) + AGE_FIELD_NUMBER;
         hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
             getAge());
+      }
+      if (hasReceived()) {
+        hash = (37 * hash) + RECEIVED_FIELD_NUMBER;
+        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
+            getReceived());
       }
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
@@ -800,6 +885,7 @@ public final class MessageProtos {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -807,6 +893,7 @@ public final class MessageProtos {
     public static Builder newBuilder(org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -830,6 +917,7 @@ public final class MessageProtos {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_Envelope_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_Envelope_fieldAccessorTable
@@ -852,6 +940,7 @@ public final class MessageProtos {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         type_ = 0;
@@ -870,18 +959,23 @@ public final class MessageProtos {
         bitField0_ = (bitField0_ & ~0x00000040);
         age_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000080);
+        received_ = 0L;
+        bitField0_ = (bitField0_ & ~0x00000100);
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_Envelope_descriptor;
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope getDefaultInstanceForType() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope build() {
         org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope result = buildPartial();
         if (!result.isInitialized()) {
@@ -890,6 +984,7 @@ public final class MessageProtos {
         return result;
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope buildPartial() {
         org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope result = new org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope(this);
         int from_bitField0_ = bitField0_;
@@ -926,37 +1021,48 @@ public final class MessageProtos {
           to_bitField0_ |= 0x00000080;
         }
         result.age_ = age_;
+        if (((from_bitField0_ & 0x00000100) == 0x00000100)) {
+          to_bitField0_ |= 0x00000100;
+        }
+        result.received_ = received_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope) {
           return mergeFrom((org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope)other);
@@ -996,15 +1102,20 @@ public final class MessageProtos {
         if (other.hasAge()) {
           setAge(other.getAge());
         }
+        if (other.hasReceived()) {
+          setReceived(other.getReceived());
+        }
         this.mergeUnknownFields(other.unknownFields);
         onChanged();
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1035,6 +1146,7 @@ public final class MessageProtos {
        * <code>optional .textsecure.Envelope.Type type = 1;</code>
        */
       public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type getType() {
+        @SuppressWarnings("deprecation")
         org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type result = org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type.valueOf(type_);
         return result == null ? org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope.Type.UNKNOWN : result;
       }
@@ -1380,18 +1492,30 @@ public final class MessageProtos {
 
       private long age_ ;
       /**
+       * <pre>
+       * How long the message was stored on the server.
+       * </pre>
+       *
        * <code>optional uint64 age = 9;</code>
        */
       public boolean hasAge() {
         return ((bitField0_ & 0x00000080) == 0x00000080);
       }
       /**
+       * <pre>
+       * How long the message was stored on the server.
+       * </pre>
+       *
        * <code>optional uint64 age = 9;</code>
        */
       public long getAge() {
         return age_;
       }
       /**
+       * <pre>
+       * How long the message was stored on the server.
+       * </pre>
+       *
        * <code>optional uint64 age = 9;</code>
        */
       public Builder setAge(long value) {
@@ -1401,6 +1525,10 @@ public final class MessageProtos {
         return this;
       }
       /**
+       * <pre>
+       * How long the message was stored on the server.
+       * </pre>
+       *
        * <code>optional uint64 age = 9;</code>
        */
       public Builder clearAge() {
@@ -1409,11 +1537,61 @@ public final class MessageProtos {
         onChanged();
         return this;
       }
+
+      private long received_ ;
+      /**
+       * <pre>
+       * Server added timestamp of when message came in.
+       * </pre>
+       *
+       * <code>optional uint64 received = 10;</code>
+       */
+      public boolean hasReceived() {
+        return ((bitField0_ & 0x00000100) == 0x00000100);
+      }
+      /**
+       * <pre>
+       * Server added timestamp of when message came in.
+       * </pre>
+       *
+       * <code>optional uint64 received = 10;</code>
+       */
+      public long getReceived() {
+        return received_;
+      }
+      /**
+       * <pre>
+       * Server added timestamp of when message came in.
+       * </pre>
+       *
+       * <code>optional uint64 received = 10;</code>
+       */
+      public Builder setReceived(long value) {
+        bitField0_ |= 0x00000100;
+        received_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <pre>
+       * Server added timestamp of when message came in.
+       * </pre>
+       *
+       * <code>optional uint64 received = 10;</code>
+       */
+      public Builder clearReceived() {
+        bitField0_ = (bitField0_ & ~0x00000100);
+        received_ = 0L;
+        onChanged();
+        return this;
+      }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1435,6 +1613,7 @@ public final class MessageProtos {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<Envelope>
         PARSER = new com.google.protobuf.AbstractParser<Envelope>() {
+      @java.lang.Override
       public Envelope parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1452,6 +1631,7 @@ public final class MessageProtos {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.whispersystems.textsecuregcm.entities.MessageProtos.Envelope getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -1516,17 +1696,17 @@ public final class MessageProtos {
             case 0:
               done = true;
               break;
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              uuid_ = bs;
+              break;
+            }
             default: {
               if (!parseUnknownField(
                   input, unknownFields, extensionRegistry, tag)) {
                 done = true;
               }
-              break;
-            }
-            case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
-              bitField0_ |= 0x00000001;
-              uuid_ = bs;
               break;
             }
           }
@@ -1546,6 +1726,7 @@ public final class MessageProtos {
       return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_ProvisioningUuid_descriptor;
     }
 
+    @java.lang.Override
     protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_ProvisioningUuid_fieldAccessorTable
@@ -1597,6 +1778,7 @@ public final class MessageProtos {
     }
 
     private byte memoizedIsInitialized = -1;
+    @java.lang.Override
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
       if (isInitialized == 1) return true;
@@ -1606,6 +1788,7 @@ public final class MessageProtos {
       return true;
     }
 
+    @java.lang.Override
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1614,6 +1797,7 @@ public final class MessageProtos {
       unknownFields.writeTo(output);
     }
 
+    @java.lang.Override
     public int getSerializedSize() {
       int size = memoizedSize;
       if (size != -1) return size;
@@ -1733,6 +1917,7 @@ public final class MessageProtos {
           .parseWithIOException(PARSER, input, extensionRegistry);
     }
 
+    @java.lang.Override
     public Builder newBuilderForType() { return newBuilder(); }
     public static Builder newBuilder() {
       return DEFAULT_INSTANCE.toBuilder();
@@ -1740,6 +1925,7 @@ public final class MessageProtos {
     public static Builder newBuilder(org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid prototype) {
       return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
     }
+    @java.lang.Override
     public Builder toBuilder() {
       return this == DEFAULT_INSTANCE
           ? new Builder() : new Builder().mergeFrom(this);
@@ -1763,6 +1949,7 @@ public final class MessageProtos {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_ProvisioningUuid_descriptor;
       }
 
+      @java.lang.Override
       protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_ProvisioningUuid_fieldAccessorTable
@@ -1785,6 +1972,7 @@ public final class MessageProtos {
                 .alwaysUseFieldBuilders) {
         }
       }
+      @java.lang.Override
       public Builder clear() {
         super.clear();
         uuid_ = "";
@@ -1792,15 +1980,18 @@ public final class MessageProtos {
         return this;
       }
 
+      @java.lang.Override
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.internal_static_textsecure_ProvisioningUuid_descriptor;
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid getDefaultInstanceForType() {
         return org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid.getDefaultInstance();
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid build() {
         org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid result = buildPartial();
         if (!result.isInitialized()) {
@@ -1809,6 +2000,7 @@ public final class MessageProtos {
         return result;
       }
 
+      @java.lang.Override
       public org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid buildPartial() {
         org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid result = new org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid(this);
         int from_bitField0_ = bitField0_;
@@ -1822,32 +2014,39 @@ public final class MessageProtos {
         return result;
       }
 
+      @java.lang.Override
       public Builder clone() {
         return (Builder) super.clone();
       }
+      @java.lang.Override
       public Builder setField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.setField(field, value);
       }
+      @java.lang.Override
       public Builder clearField(
           com.google.protobuf.Descriptors.FieldDescriptor field) {
         return (Builder) super.clearField(field);
       }
+      @java.lang.Override
       public Builder clearOneof(
           com.google.protobuf.Descriptors.OneofDescriptor oneof) {
         return (Builder) super.clearOneof(oneof);
       }
+      @java.lang.Override
       public Builder setRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           int index, java.lang.Object value) {
         return (Builder) super.setRepeatedField(field, index, value);
       }
+      @java.lang.Override
       public Builder addRepeatedField(
           com.google.protobuf.Descriptors.FieldDescriptor field,
           java.lang.Object value) {
         return (Builder) super.addRepeatedField(field, value);
       }
+      @java.lang.Override
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid) {
           return mergeFrom((org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid)other);
@@ -1869,10 +2068,12 @@ public final class MessageProtos {
         return this;
       }
 
+      @java.lang.Override
       public final boolean isInitialized() {
         return true;
       }
 
+      @java.lang.Override
       public Builder mergeFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -1967,11 +2168,13 @@ public final class MessageProtos {
         onChanged();
         return this;
       }
+      @java.lang.Override
       public final Builder setUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.setUnknownFields(unknownFields);
       }
 
+      @java.lang.Override
       public final Builder mergeUnknownFields(
           final com.google.protobuf.UnknownFieldSet unknownFields) {
         return super.mergeUnknownFields(unknownFields);
@@ -1993,6 +2196,7 @@ public final class MessageProtos {
 
     @java.lang.Deprecated public static final com.google.protobuf.Parser<ProvisioningUuid>
         PARSER = new com.google.protobuf.AbstractParser<ProvisioningUuid>() {
+      @java.lang.Override
       public ProvisioningUuid parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
@@ -2010,6 +2214,7 @@ public final class MessageProtos {
       return PARSER;
     }
 
+    @java.lang.Override
     public org.whispersystems.textsecuregcm.entities.MessageProtos.ProvisioningUuid getDefaultInstanceForType() {
       return DEFAULT_INSTANCE;
     }
@@ -2035,16 +2240,17 @@ public final class MessageProtos {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\020TextSecure.proto\022\ntextsecure\"\207\002\n\010Envel" +
+      "\n\020TextSecure.proto\022\ntextsecure\"\231\002\n\010Envel" +
       "ope\022\'\n\004type\030\001 \001(\0162\031.textsecure.Envelope." +
       "Type\022\016\n\006source\030\002 \001(\t\022\024\n\014sourceDevice\030\007 \001" +
       "(\r\022\r\n\005relay\030\003 \001(\t\022\021\n\ttimestamp\030\005 \001(\004\022\025\n\r" +
       "legacyMessage\030\006 \001(\014\022\017\n\007content\030\010 \001(\014\022\013\n\003" +
-      "age\030\t \001(\004\"U\n\004Type\022\013\n\007UNKNOWN\020\000\022\016\n\nCIPHER" +
-      "TEXT\020\001\022\020\n\014KEY_EXCHANGE\020\002\022\021\n\rPREKEY_BUNDL" +
-      "E\020\003\022\013\n\007RECEIPT\020\005\" \n\020ProvisioningUuid\022\014\n\004" +
-      "uuid\030\001 \001(\tB:\n)org.whispersystems.textsec" +
-      "uregcm.entitiesB\rMessageProtos"
+      "age\030\t \001(\004\022\020\n\010received\030\n \001(\004\"U\n\004Type\022\013\n\007U" +
+      "NKNOWN\020\000\022\016\n\nCIPHERTEXT\020\001\022\020\n\014KEY_EXCHANGE" +
+      "\020\002\022\021\n\rPREKEY_BUNDLE\020\003\022\013\n\007RECEIPT\020\005\" \n\020Pr" +
+      "ovisioningUuid\022\014\n\004uuid\030\001 \001(\tB:\n)org.whis" +
+      "persystems.textsecuregcm.entitiesB\rMessa" +
+      "geProtos"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -2063,7 +2269,7 @@ public final class MessageProtos {
     internal_static_textsecure_Envelope_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_textsecure_Envelope_descriptor,
-        new java.lang.String[] { "Type", "Source", "SourceDevice", "Relay", "Timestamp", "LegacyMessage", "Content", "Age", });
+        new java.lang.String[] { "Type", "Source", "SourceDevice", "Relay", "Timestamp", "LegacyMessage", "Content", "Age", "Received", });
     internal_static_textsecure_ProvisioningUuid_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_textsecure_ProvisioningUuid_fieldAccessorTable = new
