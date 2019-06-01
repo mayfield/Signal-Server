@@ -288,11 +288,11 @@ public class WebSocketConnectionTest {
       add(new OutgoingMessageEntity(1, firstMessage.getType().getNumber(), firstMessage.getRelay(),
                                     firstMessage.getTimestamp(), firstMessage.getSource(),
                                     firstMessage.getSourceDevice(), firstMessage.getLegacyMessage().toByteArray(),
-                                    firstMessage.getContent().toByteArray(), 0));
+                                    firstMessage.getContent().toByteArray(), 0, 0));
       add(new OutgoingMessageEntity(2, secondMessage.getType().getNumber(), secondMessage.getRelay(),
                                     secondMessage.getTimestamp(), secondMessage.getSource(),
                                     secondMessage.getSourceDevice(), secondMessage.getLegacyMessage().toByteArray(),
-                                    secondMessage.getContent().toByteArray(), 0));
+                                    secondMessage.getContent().toByteArray(), 0, 0));
     }};
 
     OutgoingMessageEntityList   pendingMessagesList = new OutgoingMessageEntityList(pendingMessages, false);
@@ -357,7 +357,7 @@ public class WebSocketConnectionTest {
 
   private OutgoingMessageEntity createMessage(long id, String sender, long timestamp, boolean receipt, String content) {
     return new OutgoingMessageEntity(id, receipt ? Envelope.Type.RECEIPT_VALUE : Envelope.Type.CIPHERTEXT_VALUE,
-                                     null, timestamp, sender, 1, content.getBytes(), null, 0);
+                                     null, timestamp, sender, 1, content.getBytes(), null, 0, 0);
   }
 
 }

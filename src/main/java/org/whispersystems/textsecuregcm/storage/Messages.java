@@ -110,7 +110,8 @@ public abstract class Messages {
                                        resultSet.getInt(SOURCE_DEVICE),
                                        legacyMessage,
                                        resultSet.getBytes(CONTENT),
-                                       age);
+                                       age,
+                                       added);
     }
   }
 

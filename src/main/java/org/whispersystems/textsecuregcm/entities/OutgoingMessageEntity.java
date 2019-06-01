@@ -32,11 +32,14 @@ public class OutgoingMessageEntity {
   @JsonProperty
   private long age;
 
+  @JsonProperty
+  private long received;
+
   public OutgoingMessageEntity() {}
 
   public OutgoingMessageEntity(long id, int type, String relay, long timestamp,
                                String source, int sourceDevice, byte[] message,
-                               byte[] content, long age)
+                               byte[] content, long age, long received)
   {
     this.id           = id;
     this.type         = type;
@@ -47,6 +50,7 @@ public class OutgoingMessageEntity {
     this.message      = message;
     this.content      = content;
     this.age          = age;
+    this.received     = received;
   }
 
   public int getType() {
@@ -79,6 +83,10 @@ public class OutgoingMessageEntity {
 
   public long getAge() {
     return age;
+  }
+
+  public long getReceived() {
+    return received;
   }
 
   public long getId() {
