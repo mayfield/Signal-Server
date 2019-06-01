@@ -183,6 +183,7 @@ public class WebSocketConnection implements DispatchChannel {
                                               .setSourceDevice(message.getSourceDevice())
                                               .setSource(message.getSource())
                                               .setTimestamp(message.getTimestamp())
+                                              .setReceived(message.getReceived())
                                               .setAge(message.getAge());
 
       if (message.getMessage() != null) {

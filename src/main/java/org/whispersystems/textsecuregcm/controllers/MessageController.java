@@ -245,9 +245,11 @@ public class MessageController {
       Optional<byte[]> messageContent = getMessageContent(incomingMessage);
       Envelope.Builder messageBuilder = Envelope.newBuilder();
 
+      long now = System.currentTimeMillis();
       messageBuilder.setType(Envelope.Type.valueOf(incomingMessage.getType()))
                     .setSource(source.getNumber())
-                    .setTimestamp(timestamp == 0 ? System.currentTimeMillis() : timestamp)
+                    .setTimestamp(timestamp == 0 ? now : timestamp)
+                    .setReceived(now)
                     .setSourceDevice((int) source.getAuthenticatedDevice().get().getId());
 
       if (messageBody.isPresent()) {
