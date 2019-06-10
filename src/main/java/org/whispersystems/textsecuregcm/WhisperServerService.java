@@ -42,11 +42,13 @@ import org.whispersystems.textsecuregcm.controllers.AttachmentController;
 import org.whispersystems.textsecuregcm.controllers.DeviceController;
 import org.whispersystems.textsecuregcm.controllers.DirectoryController;
 import org.whispersystems.textsecuregcm.controllers.FederationControllerV2;
+import org.whispersystems.textsecuregcm.controllers.HealthController;
 import org.whispersystems.textsecuregcm.controllers.KeepAliveController;
 import org.whispersystems.textsecuregcm.controllers.KeysController;
 import org.whispersystems.textsecuregcm.controllers.MessageController;
 import org.whispersystems.textsecuregcm.controllers.ProvisioningController;
 import org.whispersystems.textsecuregcm.controllers.ReceiptController;
+import org.whispersystems.textsecuregcm.controllers.TimestampController;
 import org.whispersystems.textsecuregcm.federation.FederatedClientManager;
 import org.whispersystems.textsecuregcm.federation.FederatedPeer;
 import org.whispersystems.textsecuregcm.limits.RateLimiters;
@@ -226,6 +228,8 @@ public class WhisperServerService extends Application<WhisperServerConfiguration
     environment.jersey().register(attachmentController);
     environment.jersey().register(keysController);
     environment.jersey().register(messageController);
+    environment.jersey().register(new HealthController());
+    environment.jersey().register(new TimestampController());
     PromMetricsConfiguration promMetricsConfig = config.getPromMetricsConfiguration();
     if (promMetricsConfig != null && promMetricsConfig.enabled == true) {
         logger.info("Enabling Prometheous Metrics");
