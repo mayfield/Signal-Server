@@ -112,15 +112,15 @@ public class AccountController {
   public void setGcmRegistrationId(@Auth Account account, @Valid GcmRegistrationId registrationId) {
     Device device = account.getAuthenticatedDevice().get();
 
-    if (device.getGcmId() != null &&
-        device.getGcmId().equals(registrationId.getGcmRegistrationId()))
+    if (device.getFcmId() != null &&
+        device.getFcmId().equals(registrationId.getGcmRegistrationId()))
     {
       return;
     }
 
     device.setApnId(null);
     device.setVoipApnId(null);
-    device.setGcmId(registrationId.getGcmRegistrationId());
+    device.setFcmId(registrationId.getGcmRegistrationId());
     device.setFetchesMessages(true);
     accounts.update(account);
   }
@@ -130,7 +130,7 @@ public class AccountController {
   @Path("/gcm/")
   public void deleteGcmRegistrationId(@Auth Account account) {
     Device device = account.getAuthenticatedDevice().get();
-    device.setGcmId(null);
+    device.setFcmId(null);
     accounts.update(account);
   }
 
@@ -142,7 +142,7 @@ public class AccountController {
     Device device = account.getAuthenticatedDevice().get();
     device.setApnId(registrationId.getApnRegistrationId());
     device.setVoipApnId(registrationId.getVoipRegistrationId());
-    device.setGcmId(null);
+    device.setFcmId(null);
     device.setFetchesMessages(true);
     accounts.update(account);
   }
