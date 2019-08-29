@@ -53,22 +53,27 @@ public class FCMSender implements Managed {
 
   private final AccountsManager   accountsManager;
 
-  public FCMSender(AccountsManager accountsManager, FirebaseConfiguration fbConfig) throws IOException {
+  public FCMSender(AccountsManager accountsManager, FirebaseConfiguration fbConfig) {
     if (fbConfig == null || !fbConfig.hasConfig()) {
       logger.warn("Google Firebase Messaging Unconfigured - Android and Web wakeup will not work");
       this.accountsManager = null;
       return;
     }
+    try {
+      FirebaseApp.initializeApp(new FirebaseOptions.Builder()
+          .setCredentials(GoogleCredentials.fromStream(fbConfig.getStream()))
+          .build());
+    } catch (IOException e) {
+      logger.error("Google Firebase Messaging Init Error: " + e);
+      this.accountsManager = null;
+      return;
+    }
     this.accountsManager = accountsManager;
-    FirebaseApp.initializeApp(new FirebaseOptions.Builder()
-        .setCredentials(GoogleCredentials.fromStream(fbConfig.getStream()))
-        //.setDatabaseUrl("https://forsta-notifications.firebaseio.com")
-        .build());
   }
 
   public void sendMessage(FcmMessage message) {
     if (this.accountsManager == null) {
-        return;
+      return;
     }
     String key = message.isReceipt() ? "receipt" : "notification";
     Message fbMsg = Message.builder().setToken(message.getFcmId())
@@ -78,16 +83,14 @@ public class FCMSender implements Managed {
       FirebaseMessaging.getInstance().send(fbMsg);
     } catch(FirebaseMessagingException e) {
       String errorCode = e.getErrorCode();
-      logger.error("TODO: Handle FCM error code parsing!!! " + errorCode);
-      // XXX Speculative error message tests here..  need to actually inspect contents.
-      if (errorCode.equals("UNREGISTERED") || errorCode.equals("SENDER_ID_MISMATCH")) {
+      if (errorCode.equals("registration-token-not-registered") ||
+          errorCode.equals("invalid-registration-token")) {
         handleBadRegistration(message);
       } else {
         handleGenericError(message, errorCode);
       }
       return;
     }
-    // Response is a message ID string.
     logger.info("Sent FCM notification to: " + message.getNumber() +
                 "." + message.getDeviceId());
 
@@ -98,14 +101,14 @@ public class FCMSender implements Managed {
   @Override
   public void start() {
     if (this.accountsManager == null) {
-        return;
+      return;
     }
   }
 
   @Override
   public void stop() throws IOException {
     if (this.accountsManager == null) {
-        return;
+      return;
     }
   }
 
@@ -124,25 +127,8 @@ public class FCMSender implements Managed {
     unregistered.mark();
   }
 
-  /*private void handleCanonicalRegistrationId(FcmMessage message) {
-    FcmMessage message = (FcmMessage)result.getContext();
-    logger.warn(String.format("Actually received 'CanonicalRegistrationId' ::: (canonical=%s), (original=%s)",
-                              result.getCanonicalRegistrationId(), message.getFcmId()));
-
-    Optional<Account> account = getAccountForEvent(message);
-
-    if (account.isPresent()) {
-      Device device = account.get().getDevice(message.getDeviceId()).get();
-      device.setFcmId(result.getCanonicalRegistrationId());
-
-      accountsManager.update(account.get());
-    }
-
-    canonical.mark();
-  }*/
-
   private void handleGenericError(FcmMessage message, String errorCode) {
-    logger.error(String.format("Unrecoverable Error ::: (error=%s), (gcm_id=%s), " +
+    logger.error(String.format("Unrecoverable Error ::: (error=%s), (fcm_id=%s), " +
                                "(destination=%s), (device_id=%d)",
                                errorCode, message.getFcmId(), message.getNumber(),
                                message.getDeviceId()));
@@ -157,12 +143,12 @@ public class FCMSender implements Managed {
 
       if (device.isPresent()) {
         if (message.getFcmId().equals(device.get().getFcmId())) {
-          logger.info("GCM Unregister GCM ID matches!");
+          logger.info("FCM Unregister FCM ID matches!");
 
           if (device.get().getPushTimestamp() == 0 ||
               System.currentTimeMillis() > (device.get().getPushTimestamp() +
                                             TimeUnit.SECONDS.toMillis(10))) {
-            logger.info("GCM Unregister Timestamp matches!");
+            logger.info("FCM Unregister Timestamp matches!");
             return account;
           }
         }
