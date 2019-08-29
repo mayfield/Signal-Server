@@ -1,21 +1,21 @@
 package org.whispersystems.textsecuregcm.push;
 
-public class GcmMessage {
+public class FcmMessage {
 
-  private final String  gcmId;
+  private final String  fcmId;
   private final String  number;
   private final int     deviceId;
   private final boolean receipt;
 
-  public GcmMessage(String gcmId, String number, int deviceId, boolean receipt) {
-    this.gcmId        = gcmId;
+  public FcmMessage(String fcmId, String number, int deviceId, boolean receipt) {
+    this.fcmId        = fcmId;
     this.number       = number;
     this.deviceId     = deviceId;
     this.receipt      = receipt;
   }
 
-  public String getGcmId() {
-    return gcmId;
+  public String getFcmId() {
+    return fcmId;
   }
 
   public String getNumber() {

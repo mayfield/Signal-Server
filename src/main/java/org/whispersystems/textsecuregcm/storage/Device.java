@@ -42,7 +42,7 @@ public class Device {
   private String  signalingKey;
 
   @JsonProperty
-  private String  gcmId;
+  private String  fcmId;
 
   @JsonProperty
   private String  apnId;
@@ -77,7 +77,7 @@ public class Device {
   public Device() {}
 
   public Device(long id, String name, String authToken, String salt,
-                String signalingKey, String gcmId, String apnId,
+                String signalingKey, String fcmId, String apnId,
                 String voipApnId, boolean fetchesMessages,
                 int registrationId, SignedPreKey signedPreKey,
                 long lastSeen, long created, boolean voice,
@@ -88,7 +88,7 @@ public class Device {
     this.authToken       = authToken;
     this.salt            = salt;
     this.signalingKey    = signalingKey;
-    this.gcmId           = gcmId;
+    this.fcmId           = fcmId;
     this.apnId           = apnId;
     this.voipApnId       = voipApnId;
     this.fetchesMessages = fetchesMessages;
@@ -136,14 +136,14 @@ public class Device {
     return this.created;
   }
 
-  public String getGcmId() {
-    return gcmId;
+  public String getFcmId() {
+    return fcmId;
   }
 
-  public void setGcmId(String gcmId) {
-    this.gcmId = gcmId;
+  public void setFcmId(String fcmId) {
+    this.fcmId = fcmId;
 
-    if (gcmId != null) {
+    if (fcmId != null) {
       this.pushTimestamp = System.currentTimeMillis();
     }
   }
@@ -190,7 +190,7 @@ public class Device {
   }
 
   public boolean isActive() {
-    boolean hasChannel = fetchesMessages || !Util.isEmpty(getApnId()) || !Util.isEmpty(getGcmId());
+    boolean hasChannel = fetchesMessages || !Util.isEmpty(getApnId()) || !Util.isEmpty(getFcmId());
 
     return hasChannel && signedPreKey != null && lastSeen > (System.currentTimeMillis() - TimeUnit.DAYS.toMillis(90));
   }

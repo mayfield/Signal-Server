@@ -88,7 +88,7 @@ public class DeleteUserCommand extends EnvironmentCommand<WhisperServerConfigura
             byte[] random = new byte[16];
             new SecureRandom().nextBytes(random);
 
-            device.get().setGcmId(null);
+            device.get().setFcmId(null);
             device.get().setFetchesMessages(false);
             device.get().setAuthenticationCredentials(new AuthenticationCredentials(Base64.encodeBytes(random)));
 

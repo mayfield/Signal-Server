@@ -19,7 +19,7 @@ package org.whispersystems.textsecuregcm;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.whispersystems.textsecuregcm.configuration.ApnConfiguration;
 import org.whispersystems.textsecuregcm.configuration.FederationConfiguration;
-import org.whispersystems.textsecuregcm.configuration.GcmConfiguration;
+import org.whispersystems.textsecuregcm.configuration.FirebaseConfiguration;
 import org.whispersystems.textsecuregcm.configuration.GraphiteConfiguration;
 import org.whispersystems.textsecuregcm.configuration.MaxDeviceConfiguration;
 import org.whispersystems.textsecuregcm.configuration.PartnerConfiguration;
@@ -115,7 +115,7 @@ public class WhisperServerConfiguration extends Configuration {
 
   @Valid
   @JsonProperty
-  private GcmConfiguration gcm;
+  private FirebaseConfiguration firebase;
 
   @Valid
   @JsonProperty
@@ -173,8 +173,8 @@ public class WhisperServerConfiguration extends Configuration {
     return promMetrics;
   }
 
-  public GcmConfiguration getGcmConfiguration() {
-    return gcm;
+  public FirebaseConfiguration getFirebaseConfiguration() {
+    return firebase;
   }
 
   public ApnConfiguration getApnConfiguration() {

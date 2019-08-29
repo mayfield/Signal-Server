@@ -42,18 +42,18 @@ public class PushSender implements Managed {
   public static final String APN_PAYLOAD = "{\"aps\":{\"sound\":\"default\",\"badge\":%d,\"alert\":{\"loc-key\":\"APN_Message\"}}}";
 
   private final ApnFallbackManager         apnFallbackManager;
-  private final GCMSender                  gcmSender;
+  private final FCMSender                  fcmSender;
   private final APNSender                  apnSender;
   private final WebsocketSender            webSocketSender;
   private final BlockingThreadPoolExecutor executor;
   private final int                        queueSize;
 
   public PushSender(ApnFallbackManager apnFallbackManager,
-                    GCMSender gcmSender, APNSender apnSender,
+                    FCMSender fcmSender, APNSender apnSender,
                     WebsocketSender websocketSender, int queueSize)
   {
     this.apnFallbackManager = apnFallbackManager;
-    this.gcmSender          = gcmSender;
+    this.fcmSender          = fcmSender;
     this.apnSender          = apnSender;
     this.webSocketSender    = websocketSender;
     this.queueSize          = queueSize;
@@ -72,7 +72,7 @@ public class PushSender implements Managed {
   public void sendMessage(final Account account, final Device device, final Envelope message, final boolean silent)
       throws NotPushRegisteredException
   {
-    if (device.getGcmId() == null && device.getApnId() == null && !device.getFetchesMessages()) {
+    if (device.getFcmId() == null && device.getApnId() == null && !device.getFetchesMessages()) {
       throw new NotPushRegisteredException("No delivery possible!");
     }
 
@@ -91,7 +91,7 @@ public class PushSender implements Managed {
   public void sendQueuedNotification(Account account, Device device, int messageQueueDepth, boolean fallback)
       throws NotPushRegisteredException, TransientPushFailureException
   {
-    if      (device.getGcmId() != null)    sendGcmNotification(account, device);
+    if      (device.getFcmId() != null)    sendFcmNotification(account, device);
     else if (device.getApnId() != null)    sendApnNotification(account, device, messageQueueDepth, fallback);
     else if (!device.getFetchesMessages()) throw new NotPushRegisteredException("No notification possible!");
   }
@@ -101,25 +101,25 @@ public class PushSender implements Managed {
   }
 
   private void sendSynchronousMessage(Account account, Device device, Envelope message, boolean silent) {
-    if      (device.getGcmId() != null)   sendGcmMessage(account, device, message);
+    if      (device.getFcmId() != null)   sendFcmMessage(account, device, message);
     else if (device.getApnId() != null)   sendApnMessage(account, device, message, silent);
     else if (device.getFetchesMessages()) sendWebSocketMessage(account, device, message);
     else                                  throw new AssertionError();
   }
 
-  private void sendGcmMessage(Account account, Device device, Envelope message) {
-    DeliveryStatus deliveryStatus = webSocketSender.sendMessage(account, device, message, WebsocketSender.Type.GCM);
+  private void sendFcmMessage(Account account, Device device, Envelope message) {
+    DeliveryStatus deliveryStatus = webSocketSender.sendMessage(account, device, message, WebsocketSender.Type.FCM);
 
     if (!deliveryStatus.isDelivered()) {
-      sendGcmNotification(account, device);
+      sendFcmNotification(account, device);
     }
   }
 
-  private void sendGcmNotification(Account account, Device device) {
-    GcmMessage gcmMessage = new GcmMessage(device.getGcmId(), account.getNumber(),
+  private void sendFcmNotification(Account account, Device device) {
+    FcmMessage fcmMessage = new FcmMessage(device.getFcmId(), account.getNumber(),
                                            (int)device.getId(), false);
 
-    gcmSender.sendMessage(gcmMessage);
+    fcmSender.sendMessage(fcmMessage);
   }
 
   private void sendApnMessage(Account account, Device device, Envelope outgoingMessage, boolean silent) {
@@ -164,7 +164,7 @@ public class PushSender implements Managed {
   @Override
   public void start() throws Exception {
     apnSender.start();
-    gcmSender.start();
+    fcmSender.start();
   }
 
   @Override
@@ -173,6 +173,6 @@ public class PushSender implements Managed {
     executor.awaitTermination(5, TimeUnit.MINUTES);
 
     apnSender.stop();
-    gcmSender.stop();
+    fcmSender.stop();
   }
 }

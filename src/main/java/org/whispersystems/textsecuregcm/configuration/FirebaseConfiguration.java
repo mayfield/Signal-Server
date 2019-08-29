@@ -17,13 +17,20 @@
 package org.whispersystems.textsecuregcm.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.Base64;
 
 
-public class GcmConfiguration {
+public class FirebaseConfiguration {
   @JsonProperty
-  private String apiKey;
+  private String config;  // Base64 encoded json config
 
-  public String getApiKey() {
-    return apiKey;
+  public boolean hasConfig() {
+    return config != null;
+  }
+
+  public InputStream getStream() {
+    return new ByteArrayInputStream(Base64.getDecoder().decode(config.getBytes()));
   }
 }

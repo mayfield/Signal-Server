@@ -121,9 +121,14 @@
             <version>0.9.3</version>
         </dependency>
         <dependency>
-            <groupId>org.whispersystems</groupId>
-            <artifactId>gcm-sender-async</artifactId>
-            <version>0.1.5</version>
+            <groupId>com.nurkiewicz.asyncretry</groupId>
+            <artifactId>asyncretry-jdk7</artifactId>
+            <version>0.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.firebase</groupId>
+            <artifactId>firebase-admin</artifactId>
+            <version>6.9.0</version>
         </dependency>
 
         <dependency>

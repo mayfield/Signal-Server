@@ -38,7 +38,7 @@ public class WebsocketSender {
 
   public static enum Type {
     APN,
-    GCM,
+    FCM,
     WEB
   }
 
@@ -53,8 +53,8 @@ public class WebsocketSender {
   private final Meter apnOnlineMeter        = metricRegistry.meter(name(getClass(), "apn_online" ));
   private final Meter apnOfflineMeter       = metricRegistry.meter(name(getClass(), "apn_offline"));
 
-  private final Meter gcmOnlineMeter        = metricRegistry.meter(name(getClass(), "gcm_online" ));
-  private final Meter gcmOfflineMeter       = metricRegistry.meter(name(getClass(), "gcm_offline"));
+  private final Meter fcmOnlineMeter        = metricRegistry.meter(name(getClass(), "fcm_online" ));
+  private final Meter fcmOfflineMeter       = metricRegistry.meter(name(getClass(), "fcm_offline"));
 
   private final Meter provisioningOnlineMeter  = metricRegistry.meter(name(getClass(), "provisioning_online" ));
   private final Meter provisioningOfflineMeter = metricRegistry.meter(name(getClass(), "provisioning_offline"));
@@ -76,13 +76,13 @@ public class WebsocketSender {
 
     if (pubSubManager.publish(address, pubSubMessage)) {
       if      (channel == Type.APN) apnOnlineMeter.mark();
-      else if (channel == Type.GCM) gcmOnlineMeter.mark();
+      else if (channel == Type.FCM) fcmOnlineMeter.mark();
       else                          websocketOnlineMeter.mark();
 
       return new DeliveryStatus(true, 0);
     } else {
       if      (channel == Type.APN) apnOfflineMeter.mark();
-      else if (channel == Type.GCM) gcmOfflineMeter.mark();
+      else if (channel == Type.FCM) fcmOfflineMeter.mark();
       else                          websocketOfflineMeter.mark();
 
       int queueDepth = queueMessage(account, device, message);
