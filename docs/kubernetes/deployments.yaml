@@ -46,11 +46,6 @@ spec:
                 secretKeyRef:
                   name: signal-secrets
                   key: CCSM_PARTNER_TOKEN
-            - name: GCM_APIKEY
-              valueFrom:
-                secretKeyRef:
-                  name: signal-secrets
-                  key: GCM_APIKEY
             - name: S3_ACCESSKEY
               valueFrom:
                 secretKeyRef:
@@ -71,6 +66,12 @@ spec:
                 secretKeyRef:
                   name: signal-secrets
                   key: SENTRY_DSN
+            - name: FIREBASE_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: signal-secrets
+                  key: FIREBASE_CONFIG
+
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
