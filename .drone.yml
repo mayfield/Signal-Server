@@ -18,9 +18,6 @@ steps:
     tags: commit-${DRONE_COMMIT},dev-build-${DRONE_BUILD_NUMBER}
     build_args:
     - source_version=${DRONE_COMMIT}
-  volumes:
-   - name: docker
-     path: /var/run/docker.sock
 - name: deploy
   image: quay.io/honestbee/drone-kubernetes
   settings:
@@ -41,7 +38,3 @@ steps:
     status:
     - success
     - failure
-volumes:
-- name: docker
-  host:
-    path: /var/run/docker.sock
