@@ -90,9 +90,11 @@ public class APNSender implements Managed {
     }
     String topic = bundleId;
 
+    /* just testing an adjustment...
     if (message.isVoip()) {
       topic = topic + ".voip";
     }
+    */
     
     ListenableFuture<ApnResult> future = apnsClient.send(message.getApnId(), topic,
                                                          message.getMessage(),
