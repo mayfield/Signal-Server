@@ -90,12 +90,11 @@ public class APNSender implements Managed {
     }
     String topic = bundleId;
 
-    /* just testing an adjustment...
     if (message.isVoip()) {
       topic = topic + ".voip";
     }
-    */
     
+    logger.warn("*** GEP: about to APN: id=" + message.getApnId() + ", topic=" + topic + ", message=" + message.getMessage());
     ListenableFuture<ApnResult> future = apnsClient.send(message.getApnId(), topic,
                                                          message.getMessage(),
                                                          new Date(message.getExpirationTime()));
@@ -103,6 +102,7 @@ public class APNSender implements Managed {
     Futures.addCallback(future, new FutureCallback<ApnResult>() {
       @Override
       public void onSuccess(@Nullable ApnResult result) {
+        logger.warn("*** GEP: Got APN success: " + result.getStatus() + ", " + result.getReason() + ", " + message.getNumber());
         if (result == null) {
           logger.warn("*** RECEIVED NULL APN RESULT ***");
         } else if (result.getStatus() == ApnResult.Status.NO_SUCH_USER) {
@@ -114,7 +114,7 @@ public class APNSender implements Managed {
 
       @Override
       public void onFailure(@Nullable Throwable t) {
-        logger.warn("Got fatal APNS exception", t);
+        logger.warn("GEP: Got fatal APNS exception on message#" + message.getNumber() + " -- ", t);
       }
     }, executor);
 
