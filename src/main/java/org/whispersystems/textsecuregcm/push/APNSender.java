@@ -94,7 +94,7 @@ public class APNSender implements Managed {
       topic = topic + ".voip";
     }
     
-    logger.warn("*** GEP: about to APN: id=" + message.getApnId() + ", topic=" + topic + ", message=" + message.getMessage());
+    logger.warn("*** GEP: about to APN: message# " + message.getNumber() + " id=" + message.getApnId() + ", topic=" + topic + ", message=" + message.getMessage());
     ListenableFuture<ApnResult> future = apnsClient.send(message.getApnId(), topic,
                                                          message.getMessage(),
                                                          new Date(message.getExpirationTime()));
@@ -114,7 +114,7 @@ public class APNSender implements Managed {
 
       @Override
       public void onFailure(@Nullable Throwable t) {
-        logger.warn("GEP: Got fatal APNS exception on message#" + message.getNumber() + " -- ", t);
+        logger.warn("GEP: Got fatal APNS exception on message#" + message.getNumber() + "id=" + message.getApnId() + " -- ", t);
       }
     }, executor);
 
